@@ -14,8 +14,8 @@
 * 📈 Detects when knowledge base changes invalidate existing ground truth data.
 * 🎯 One click delivers insight for both AI teams and business teams.
 * 🚀Turn RAG evaluation into a fast, iterative loop
-  * 👉 [Check the video demo >>][3]
-  * 👉 [Try the playground >>][2]
+  * 👉 <a href="https://www.youtube.com/watch?v=iH4Po0Qys0o" target="_blank" rel="noopener noreferrer">Check the video demo >></a>
+  * 👉 <a href="https://rag-dr.hanhanwu.com/" target="_blank" rel="noopener noreferrer">Try the playground >></a>
 <p align="center"> <img src="frontend/assets/github_anime_v3.gif" alt="github animation" /> </p>
 
 ## Why This Matters
@@ -52,6 +52,3 @@ Ways to contribute:
 
 
 [1]:https://github.com/hanhanwu/RagDoctor/blob/main/developer_readme.md
-[2]:https://rag-dr.hanhanwu.com/
-[3]:https://www.youtube.com/watch?v=iH4Po0Qys0o
-
