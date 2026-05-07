@@ -1264,7 +1264,7 @@ function ABTestPage({ selectedDataset }) {
                                 { label: "Retrieval Failure Recovery", value: improvementStats.retrievalFailureRecovery, goodWhenPositive: true },
                                 { label: "Retrieval Relevancy Improvement", value: improvementStats.retrievalRelevancyImprovement, goodWhenPositive: true },
                               ].map(({ label, value, goodWhenPositive }) => {
-                                const v = Number(value) || 0;
+                                const v = Math.round((Number(value) || 0) * 10) / 10;
                                 let color = "#000";
                                 if (v !== 0) color = (goodWhenPositive ? v > 0 : v < 0) ? "#1a6937" : "#c0392b";
                                 return (
@@ -1282,7 +1282,7 @@ function ABTestPage({ selectedDataset }) {
                                 { label: "Hallucination Reduction", value: improvementStats.hallucinationReduction, goodWhenPositive: true },
                                 { label: "Answer Quality Improvement", value: improvementStats.answerQualityImprovement, goodWhenPositive: true },
                               ].map(({ label, value, goodWhenPositive }) => {
-                                const v = Number(value) || 0;
+                                const v = Math.round((Number(value) || 0) * 10) / 10;
                                 let color = "#000";
                                 if (v !== 0) color = (goodWhenPositive ? v > 0 : v < 0) ? "#1a6937" : "#c0392b";
                                 return (
