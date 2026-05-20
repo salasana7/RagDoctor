@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { T, ThemeToggle } from "../theme";
+import { T, ThemeToggle, useTheme } from "../theme";
 import { BACKEND_URL } from "../constants";
 import { Logo } from "../components/Logo";
+import DotField from "../components/DotField";
 
 // ─── Page 1: Dataset Selection ───────────────────────────────────────────────
 
@@ -10,6 +11,15 @@ export function DatasetPage({ onDatasetReady }) {
   const [datasetClicked, setDatasetClicked] = useState(false);
   const [preprocessingStatus, setPreprocessingStatus] = useState("idle");
   const [preprocessingMessage, setPreprocessingMessage] = useState("");
+  const { theme } = useTheme();
+
+  // Interactive dot field behind the content. The dot/glow colors must
+  // contrast with the page, so they flip with the theme: dark ink dots on
+  // the light background, warm light dots on the dark one.
+  const dots =
+    theme === "dark"
+      ? { gradientFrom: "rgba(235, 228, 216, 0.5)", gradientTo: "rgba(180, 151, 207, 0.3)", glowColor: "#2E2440" }
+      : { gradientFrom: "#000000", gradientTo: "rgba(180, 151, 207, 0.25)", glowColor: "#A374BD" };
 
   const handleFIQASelect = async () => {
     setSelectedDataset("FIQA Data");
@@ -51,11 +61,27 @@ export function DatasetPage({ onDatasetReady }) {
         padding: "72px 24px 48px",
         boxSizing: "border-box",
         position: "relative",
+        overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: "20px", right: "24px" }}>
+        <DotField
+          dotRadius={1.5}
+          dotSpacing={14}
+          cursorRadius={500}
+          cursorForce={0.1}
+          bulgeOnly
+          bulgeStrength={67}
+          glowRadius={110}
+          sparkle
+          waveAmplitude={0}
+          gradientFrom={dots.gradientFrom}
+          gradientTo={dots.gradientTo}
+          glowColor={dots.glowColor}
+          style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}
+        />
+        <div style={{ position: "absolute", top: "20px", right: "24px", zIndex: 1 }}>
           <ThemeToggle />
         </div>
-        <div className="enter-up" style={{ width: "100%", maxWidth: "640px", textAlign: "center" }}>
+        <div className="enter-up" style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "640px", textAlign: "center" }}>
           <div style={{ display: "flex", justifyContent: "center", margin: "0 0 18px 0" }}>
             <Logo size="lg" />
           </div>
@@ -71,6 +97,8 @@ export function DatasetPage({ onDatasetReady }) {
         </div>
 
         <div className="enter-up" style={{
+          position: "relative",
+          zIndex: 1,
           width: "100%",
           maxWidth: "640px",
           animationDelay: "80ms",
@@ -198,7 +226,7 @@ export function DatasetPage({ onDatasetReady }) {
           </button>
         </div>
 
-        <div style={{ flex: 1, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "48px", width: "100%", maxWidth: "640px" }}>
+        <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "48px", width: "100%", maxWidth: "640px" }}>
           {preprocessingStatus === "done" && (
             <button
               onClick={() => onDatasetReady(selectedDataset)}
