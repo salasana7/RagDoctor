@@ -71,6 +71,19 @@ export function ABTestPage({ selectedDataset }) {
     };
   }, [evalResults]);
 
+  // Plain-language verdict derived from the answer-quality CI.
+  const verdict = useMemo(() => {
+    if (!ciResult) return null;
+    const { meanDiff, ciLower, ciUpper, n } = ciResult;
+    const decisive = ciLower > 0 || ciUpper < 0;
+    return {
+      decisive,
+      headline: ciLower > 0 ? "RAG 2 wins" : ciUpper < 0 ? "RAG 1 wins" : "No significant difference",
+      mag: Math.abs(meanDiff).toFixed(2),
+      n,
+    };
+  }, [ciResult]);
+
   const ciResultRef = useRef(null);
   ciResultRef.current = ciResult;
 
@@ -508,60 +521,50 @@ export function ABTestPage({ selectedDataset }) {
                     RAG Performance Comparison
                   </div>
 
-                  {/* Verdict — the headline answer, above the evidence */}
-                  {ciResult && !settingsChangedAfterRAG && (
+                  {/* Verdict — calm headline + the one number, above the evidence */}
+                  {verdict && !settingsChangedAfterRAG && (
                     <div className="enter-up" style={{
                       marginTop: "14px",
                       width: "100%",
-                      padding: "16px 20px",
-                      background: ciResult.rag2Better ? T.color.sageSoft : T.color.coralSoft,
-                      border: `1px solid ${ciResult.rag2Better ? T.color.sage : T.color.coral}`,
+                      padding: "18px 20px",
+                      background: verdict.decisive ? T.color.sageSoft : T.color.surfaceMuted,
+                      border: `1px solid ${verdict.decisive ? T.color.sage : T.color.border}`,
                       borderRadius: T.radius.md,
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "16px",
-                      flexWrap: "wrap",
+                      gap: "14px",
+                      boxSizing: "border-box",
                       animationDelay: "0ms",
                     }}>
-                      <div style={{
+                      <div aria-hidden style={{
+                        flexShrink: 0,
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                        background: verdict.decisive ? T.color.sage : T.color.surfaceSunk,
+                        color: verdict.decisive ? T.color.onColorLight : T.color.textMuted,
                         display: "flex",
                         alignItems: "center",
-                        gap: "10px",
-                        fontWeight: 600,
-                        color: ciResult.rag2Better ? T.color.success : T.color.danger,
-                        fontSize: "0.95rem",
+                        justifyContent: "center",
+                        fontSize: "1.15rem",
+                        fontWeight: 700,
                       }}>
-                        <span aria-hidden style={{ fontSize: "1.1rem" }}>{ciResult.rag2Better ? "✓" : "✕"}</span>
-                        <span>
-                          RAG 2 is{ciResult.rag2Better ? " " : " not "}statistically better than RAG 1
-                        </span>
+                        {verdict.decisive ? "✓" : "≈"}
                       </div>
-                      <div style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontSize: "0.85rem",
-                        fontWeight: 600,
-                        color: T.color.brandText,
-                      }}>
-                        <span style={{
-                          fontSize: "0.68rem",
-                          letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          color: T.color.textMuted,
-                          fontWeight: 600,
-                        }}>
-                          New control group
-                        </span>
-                        <span style={{
-                          padding: "3px 10px",
-                          borderRadius: T.radius.pill,
-                          background: T.color.brandSoft,
-                          border: `1px solid ${T.color.burgundySoft}`,
-                        }}>
-                          {ciResult.rag2Better ? "RAG 2" : "RAG 1"}
-                        </span>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: "1.18rem", fontWeight: 800, color: T.color.text, letterSpacing: "-0.015em" }}>
+                          {verdict.headline}
+                        </div>
+                        <div style={{ marginTop: "3px", fontSize: "0.92rem", color: T.color.textMuted, lineHeight: 1.5 }}>
+                          {verdict.decisive ? (
+                            <>
+                              <b style={{ color: T.color.success, fontSize: "1rem", fontWeight: 800 }}>+{verdict.mag}</b>
+                              {" "}higher answer quality, measured across {verdict.n} questions.
+                            </>
+                          ) : (
+                            <>RAG 1 and RAG 2 scored within {verdict.mag} of each other across {verdict.n} questions.</>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -591,7 +594,7 @@ export function ABTestPage({ selectedDataset }) {
                       />
                     </div>
                   </div>
-                  {ciResult && !settingsChangedAfterRAG && ciResult.rag2Better && improvementStats && (
+                  {ciResult && !settingsChangedAfterRAG && improvementStats && (
                         <div className="enter-up" style={{
                           marginTop: "16px",
                           width: "100%",
@@ -608,12 +611,8 @@ export function ABTestPage({ selectedDataset }) {
                             fontSize: "0.95rem",
                             fontWeight: 700,
                             letterSpacing: "-0.005em",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
                           }}>
-                            <span aria-hidden style={{ color: T.color.brandText }}>📊</span>
-                            Improvement stats
+                            Quality deltas · RAG 2 vs RAG 1
                           </h3>
                           <div style={{ display: "flex", gap: "32px" }}>
                             {[
@@ -717,9 +716,7 @@ export function ABTestPage({ selectedDataset }) {
                         <span aria-hidden style={{ color: T.color.brandText }}>☑</span>
                         Root cause analysis
                       </h3>
-                      <div style={{ display: "flex", alignItems: "stretch", gap: "24px" }}>
-                        {/* Left: content */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                      <div>
                           {/* Needs Review section */}
                           {(rcaData.hasReEvalRows || rcaData.controlSuggestions?.length > 0) && (
                             <div style={{ marginBottom: rcaData.compareLessons?.length > 0 ? "22px" : 0 }}>
@@ -791,65 +788,56 @@ export function ABTestPage({ selectedDataset }) {
                               </ul>
                             </div>
                           )}
-                        </div>
-                        {/* Right: action column aligned bottom-right */}
+                      </div>
+                      {(checkedSuggestionsCount > 0 || pendingSwap) && (
                         <div style={{
-                          flex: "0 1 220px",
-                          minWidth: 0,
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "12px",
-                          fontSize: "0.9rem",
-                          justifyContent: "flex-end",
-                          alignItems: "flex-end",
-                          alignSelf: "stretch",
+                          marginTop: "20px",
+                          paddingTop: "18px",
+                          borderTop: `1px solid ${T.color.border}`,
                         }}>
                           {pendingSwap && (
                             <div style={{
-                              padding: "10px 14px",
-                              borderRadius: T.radius.sm,
-                              background: T.color.successSoft,
-                              border: `1px solid ${T.color.sage}`,
-                              fontSize: "0.82rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                              fontSize: "0.84rem",
                               color: T.color.success,
-                              lineHeight: 1.4,
-                              textAlign: "center",
                               fontWeight: 600,
-                              width: "100%",
-                              boxSizing: "border-box",
+                              marginBottom: "10px",
                             }}>
-                              ✓ Reference updates submitted
+                              <span aria-hidden>✓</span> Reference updates submitted
                             </div>
                           )}
-                          {(checkedSuggestionsCount > 0 || pendingSwap) && (
-                            <button
-                              onClick={handleNewABTest}
-                              style={{
-                                background: T.color.brand,
-                                color: T.color.onColorLight,
-                                border: "none",
-                                borderRadius: T.radius.md,
-                                padding: "11px 22px",
-                                fontSize: "0.92rem",
-                                fontWeight: 600,
-                                cursor: "pointer",
-                                position: "relative",
-                                overflow: "hidden",
-                                width: "100%",
-                                boxShadow: T.shadow.md,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: 8,
-                              }}
-                            >
-                              <span className="cta-fill" />
-                              <span>Run new A/B test</span>
-                              <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1rem" }} aria-hidden>→</span>
-                            </button>
-                          )}
+                          <div style={{ fontSize: "0.82rem", color: T.color.textMuted, marginBottom: "10px" }}>
+                            {ciResult?.rag2Better ? "RAG 2" : "RAG 1"} becomes the new baseline for the next run.
+                          </div>
+                          <button
+                            onClick={handleNewABTest}
+                            style={{
+                              width: "100%",
+                              background: T.color.brand,
+                              color: T.color.onColorLight,
+                              border: "none",
+                              borderRadius: T.radius.md,
+                              padding: "13px 22px",
+                              fontSize: "0.95rem",
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              position: "relative",
+                              overflow: "hidden",
+                              boxShadow: T.shadow.md,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: 8,
+                            }}
+                          >
+                            <span className="cta-fill" />
+                            <span>Run new A/B test</span>
+                            <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1rem" }} aria-hidden>→</span>
+                          </button>
                         </div>
-                      </div>
+                      )}
                     </div>
                   )}
                 </>
