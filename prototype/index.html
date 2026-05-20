@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RagDoctor — UX Redesign Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ PROTOTYPE CHROME (not part of the product) ============ -->
+<div class="proto-bar">
+  <div class="proto-brand"><b>RagDoctor</b> &nbsp;·&nbsp; UX Redesign Prototype</div>
+  <div class="proto-tabs">
+    <button data-target="screen-home" class="is-active">Homepage</button>
+    <button data-target="screen-ab">A/B Results</button>
+    <button data-target="screen-rca">Root-Cause Analysis</button>
+  </div>
+  <div class="proto-spacer"></div>
+  <button class="proto-theme" id="themeBtn">
+    <span id="themeIcon">&#9789;</span><span id="themeLabel">Dark</span>
+  </button>
+</div>
+
+<div class="proto-stage">
+
+  <!-- =================================================================
+       SCREEN 1 — HOMEPAGE
+       ================================================================= -->
+  <section id="screen-home" class="screen home is-active">
+    <div class="home-dotgrid"></div>
+    <button class="icon-btn home-toggle theme-toggle" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+      </svg>
+    </button>
+
+    <div class="home-cluster">
+      <div class="logo logo-lg">
+        <span class="l-name">RAG Doctor</span><span class="l-slash">/</span><span class="l-sub">Playground</span>
+      </div>
+
+      <p class="home-tagline">
+        Run RAG configurations side by side, see statistical winners, and trace
+        failures back to retrieval, prompts, or stale ground truth.
+      </p>
+
+      <!-- Onboarding: the dead-end "Step 1" eyebrow becomes a 3-step journey -->
+      <ol class="journey">
+        <li class="journey-step is-active">
+          <span class="journey-num">1</span><span>Select dataset</span>
+        </li>
+        <li class="journey-line"></li>
+        <li class="journey-step">
+          <span class="journey-num">2</span><span>Compare RAG setups</span>
+        </li>
+        <li class="journey-line"></li>
+        <li class="journey-step">
+          <span class="journey-num">3</span><span>Trace root cause</span>
+        </li>
+      </ol>
+
+      <!-- The hero: the single dataset card -->
+      <div class="dataset-card is-selected" role="button" tabindex="0">
+        <div>
+          <div class="dataset-head">
+            <span class="dataset-name">FIQA</span>
+            <span class="pill">30 records</span>
+          </div>
+          <div class="dataset-desc">
+            Finance Q&amp;A benchmark.
+            <a href="#" onclick="return false;">View on Hugging Face&nbsp;&rarr;</a>
+          </div>
+          <div class="dataset-status">
+            <span class="tick">&#10003;</span> Preprocessing complete
+          </div>
+        </div>
+        <span class="radio is-on">
+          <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true">
+            <path d="M2.5 6.2l2.4 2.4L9.5 3.6" fill="none" stroke="#fff" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <button class="btn-primary home-cta">
+        <span>Start RAG A/B test</span><span class="arrow">&rarr;</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCREEN 2 — A/B RESULTS
+       ================================================================= -->
+  <section id="screen-ab" class="screen ab">
+    <header class="app-header">
+      <div class="logo logo-sm">
+        <span class="l-name">RAG Doctor</span><span class="l-slash">/</span><span class="l-sub">Playground</span>
+      </div>
+      <div class="header-right">
+        <span class="ds-status"><span class="ds-dot"></span>FIQA Data</span>
+        <span class="h-divider"></span>
+        <span class="h-step">Step 2 of 3</span>
+        <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+          </svg>
+        </button>
+        <a class="icon-btn" href="#" onclick="return false;" aria-label="GitHub">
+          <svg height="17" viewBox="0 0 16 16" width="17" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+        <a class="star-btn" href="#" onclick="return false;">
+          <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+          </svg>
+          <span>128</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="ab-body">
+      <!-- LEFT — RAG 1 -->
+      <div class="settings-col">
+        <div class="settings-panel">
+          <div class="settings-eye">Control &middot; A</div>
+          <h2 class="settings-title control">RAG 1 Settings</h2>
+          <div class="field"><label>Embedding Model</label>
+            <div class="field-shell">text-embedding-3-small<span class="caret">&#9662;</span></div></div>
+          <div class="field"><label>Top N Retrieved Content</label>
+            <div class="field-shell">Top 1<span class="caret">&#9662;</span></div></div>
+          <div class="field"><label>Semantic Weight</label>
+            <div class="field-shell">0.50</div></div>
+          <div class="field"><label>Keyword Weight</label>
+            <div class="field-shell muted">0.50</div></div>
+          <div class="slider-row">
+            <div class="slider-track">
+              <div class="slider-fill" style="width:50%"></div>
+              <div class="slider-thumb" style="left:50%"></div>
+            </div>
+            <div class="slider-ends"><span>semantic</span><span>keyword</span></div>
+          </div>
+          <div class="field"><label>Answer Generation LLM</label>
+            <div class="field-shell">llama-3.1-8b-instant<span class="caret">&#9662;</span></div></div>
+        </div>
+      </div>
+
+      <!-- CENTER — results -->
+      <div class="results-col">
+        <div class="eyebrow results-eye">Comparison results</div>
+
+        <!-- Verdict: calm headline + one plain sentence -->
+        <div class="verdict">
+          <div class="verdict-mark">&#10003;</div>
+          <div>
+            <div class="verdict-headline">RAG 2 wins</div>
+            <div class="verdict-sub">
+              Answer quality is statistically better than RAG 1 — the 95%
+              confidence interval stays entirely above zero.
+            </div>
+          </div>
+        </div>
+
+        <!-- Confidence-interval strip: the statistic, drawn -->
+        <div class="ci-card">
+          <div class="ci-head">
+            <span class="ci-title">Answer-quality gain&nbsp; (RAG 2 &minus; RAG 1)</span>
+            <span class="ci-n">n = 30 paired records</span>
+          </div>
+          <div class="ci-track">
+            <div class="ci-axis"></div>
+            <div class="ci-zero" style="left:50%"></div>
+            <div class="ci-zero-label" style="left:50%">0</div>
+            <div class="ci-bar" style="left:55.5%;width:31%"></div>
+            <div class="ci-bar-line" style="left:55.5%;width:31%"></div>
+            <div class="ci-cap" style="left:55.5%"></div>
+            <div class="ci-cap" style="left:86.5%"></div>
+            <div class="ci-mean" style="left:71%"></div>
+            <div class="ci-mean-label" style="left:71%">+0.42</div>
+          </div>
+          <div class="ci-scale"><span>&minus;1.0</span><span>+1.0</span></div>
+          <div class="ci-readout">
+            <b>+0.42</b> mean gain &nbsp;&middot;&nbsp;
+            <span class="muted">95% CI [+0.11, +0.73]</span> &nbsp;&middot;&nbsp;
+            the interval excludes 0, so the improvement is significant at p&nbsp;&lt;&nbsp;0.05.
+          </div>
+        </div>
+
+        <!-- Score distribution: one shared legend, winner marked -->
+        <div class="eyebrow section-eye">Score distribution</div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-sw" style="background:var(--score3)"></span>3 &middot; relevant</span>
+          <span class="legend-item"><span class="legend-sw" style="background:var(--score2)"></span>2 &middot; partial</span>
+          <span class="legend-item"><span class="legend-sw" style="background:var(--score1)"></span>1 &middot; low value</span>
+          <span class="legend-item"><span class="legend-sw" style="background:var(--score0)"></span>0 &middot; irrelevant</span>
+          <span class="legend-item"><span class="legend-sw" style="background:var(--scoreNeg)"></span>&minus;1 &middot; outlier</span>
+        </div>
+
+        <div class="charts">
+          <!-- Retrieval Quality -->
+          <div class="chart-card">
+            <div class="chart-head">
+              <span class="chart-title">Retrieval Quality</span>
+              <span class="chart-n">30 records</span>
+            </div>
+            <div class="plot">
+              <div class="bar-col">
+                <div class="bar-stack">
+                  <div class="seg s0" style="flex-grow:8">8</div>
+                  <div class="seg s1" style="flex-grow:7">7</div>
+                  <div class="seg s2" style="flex-grow:9">9</div>
+                  <div class="seg s3" style="flex-grow:6">6</div>
+                </div>
+                <div class="bar-label"><div class="nm">RAG 1</div><div class="nn">n=30</div></div>
+              </div>
+              <div class="bar-col">
+                <div class="bar-stack">
+                  <div class="seg s0" style="flex-grow:4">4</div>
+                  <div class="seg s1" style="flex-grow:5">5</div>
+                  <div class="seg s2" style="flex-grow:10">10</div>
+                  <div class="seg s3" style="flex-grow:11">11</div>
+                </div>
+                <div class="bar-label"><div class="nm">RAG 2</div><div class="nn">n=30</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer Quality — the winning metric -->
+          <div class="chart-card is-winner">
+            <div class="chart-head">
+              <span class="chart-title">Answer Quality</span>
+              <span class="chart-win-tag">Winner</span>
+            </div>
+            <div class="plot">
+              <div class="bar-col">
+                <div class="bar-stack">
+                  <div class="seg s0" style="flex-grow:6">6</div>
+                  <div class="seg s1" style="flex-grow:8">8</div>
+                  <div class="seg s2" style="flex-grow:9">9</div>
+                  <div class="seg s3" style="flex-grow:7">7</div>
+                </div>
+                <div class="bar-label"><div class="nm">RAG 1</div><div class="nn">n=30</div></div>
+              </div>
+              <div class="bar-col">
+                <div class="bar-stack">
+                  <div class="seg sneg" style="flex-grow:1">1</div>
+                  <div class="seg s0" style="flex-grow:3">3</div>
+                  <div class="seg s1" style="flex-grow:6">6</div>
+                  <div class="seg s2" style="flex-grow:10">10</div>
+                  <div class="seg s3" style="flex-grow:10">10</div>
+                </div>
+                <div class="bar-label"><div class="nm">RAG 2</div><div class="nn">n=30</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Improvement stats — symmetric, always shown -->
+        <div class="stats-card">
+          <div class="card-title">Improvement stats &mdash; RAG 2 over RAG 1</div>
+          <div class="stats-grid">
+            <div class="stat-group">
+              <div class="stat-group-label">Retrieval quality</div>
+              <div class="stat-row"><span>Retrieval failure recovery</span><span class="stat-val pos">+13.3%</span></div>
+              <div class="stat-row"><span>Relevancy improvement</span><span class="stat-val pos">+20.0%</span></div>
+            </div>
+            <div class="stat-group">
+              <div class="stat-group-label">Answer quality</div>
+              <div class="stat-row"><span>Hallucination reduction</span><span class="stat-val pos">+10.0%</span></div>
+              <div class="stat-row"><span>Answer quality improvement</span><span class="stat-val pos">+13.3%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Root-cause analysis -->
+        <div class="rca-card-2">
+          <div class="card-title">Root-cause analysis</div>
+          <div class="rca-grid">
+            <div>
+              <div class="rca-label">Needs review &middot; 3</div>
+              <label class="review-item flagged">
+                <input type="checkbox" />
+                <span>Re-evaluate 4 flagged records
+                  <span class="open-link">&nbsp;Open queue&nbsp;&rarr;</span></span>
+              </label>
+              <label class="review-item">
+                <input type="checkbox" />
+                <span>Update referenced answer for finance-tax queries</span>
+              </label>
+              <label class="review-item">
+                <input type="checkbox" />
+                <span>Refine query phrasing on 2 ambiguous prompts</span>
+              </label>
+            </div>
+            <div>
+              <div class="rca-label">What we learned</div>
+              <ul class="lessons">
+                <li>Higher Top-N recovered retrieval failures without adding noise.</li>
+                <li>gpt-oss-120b cut hallucination on multi-step finance questions.</li>
+                <li>Three ground-truth answers look stale versus retrieved content.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="rca-action">
+            <span class="rca-hint">
+              Apply the reviewed changes, then re-run &mdash; <b>RAG 2 becomes the new control group.</b>
+            </span>
+            <button class="btn-primary">
+              <span>Run new A/B test</span><span class="arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — RAG 2 (winner) -->
+      <div class="settings-col">
+        <div class="settings-panel is-winner">
+          <span class="winner-badge">Winner</span>
+          <div class="settings-eye">Test &middot; B</div>
+          <h2 class="settings-title test">RAG 2 Settings</h2>
+          <div class="field"><label>Embedding Model</label>
+            <div class="field-shell">text-embedding-3-small<span class="caret">&#9662;</span></div></div>
+          <div class="field"><label>Top N Retrieved Content</label>
+            <div class="field-shell">Top 3<span class="caret">&#9662;</span></div></div>
+          <div class="field"><label>Semantic Weight</label>
+            <div class="field-shell">0.70</div></div>
+          <div class="field"><label>Keyword Weight</label>
+            <div class="field-shell muted">0.30</div></div>
+          <div class="slider-row">
+            <div class="slider-track">
+              <div class="slider-fill" style="width:70%"></div>
+              <div class="slider-thumb" style="left:70%"></div>
+            </div>
+            <div class="slider-ends"><span>semantic</span><span>keyword</span></div>
+          </div>
+          <div class="field"><label>Answer Generation LLM</label>
+            <div class="field-shell">openai/gpt-oss-120b<span class="caret">&#9662;</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCREEN 3 — ROOT-CAUSE ANALYSIS (review queue)
+       ================================================================= -->
+  <section id="screen-rca" class="screen rca">
+    <div class="rca-scroll">
+      <div class="rca-wrap">
+        <div class="rca-page-head">
+          <h1>Re-evaluation queue</h1>
+          <p>
+            RAG 2 flagged 3 records where the ground truth may be stale. Review
+            each one, edit the reference if it is wrong, then submit.
+          </p>
+          <div class="rca-meter-row">
+            <span class="rca-meter"><i style="width:33%"></i></span>
+            <span>1 of 3 reviewed</span>
+          </div>
+        </div>
+
+        <div class="queue">
+
+          <!-- Card 1 — edited -->
+          <article class="review-card is-edited">
+            <div class="rc-top">
+              <span class="rc-num">01</span>
+              <div class="rc-q">
+                <div class="rc-q-label">Query</div>
+                <div class="rc-q-text">How is the cost basis calculated for inherited stock when it is later sold?</div>
+              </div>
+              <div class="rc-scores">
+                <span class="score-chip chip-s0"><span class="dot"></span>Retrieval <b>0</b></span>
+                <span class="score-chip chip-s1"><span class="dot"></span>Answer <b>1</b></span>
+              </div>
+            </div>
+            <div class="rc-flag">
+              <span class="fi">!</span>
+              <span><b>Why it's flagged.</b> The retrieved content is more specific
+              than the labeled context — the reference answer is likely outdated.</span>
+            </div>
+            <div class="rc-compare">
+              <div class="rc-pane reference">
+                <div class="rc-pane-head">
+                  <span class="rc-pane-label">Reference answer</span>
+                  <span class="badge-edited">Edited</span>
+                  <button class="mini-btn">Edit</button>
+                </div>
+                <p class="rc-pane-body">Inherited stock receives a stepped-up cost
+                basis equal to the fair market value on the decedent's date of
+                death; gain on sale is measured against that value.</p>
+              </div>
+              <div class="rc-pane">
+                <div class="rc-pane-head">
+                  <span class="rc-pane-label">AI answer &middot; RAG 2</span>
+                </div>
+                <p class="rc-pane-body">The cost basis is "stepped up" to the
+                market value on the date the original owner died, so only gains
+                after that date are taxable when sold.</p>
+              </div>
+            </div>
+            <details class="rc-more">
+              <summary>Show retrieved &amp; referenced content</summary>
+              <div class="rc-more-body">
+                <div class="rc-pane">
+                  <div class="rc-pane-head"><span class="rc-pane-label">Referenced content</span>
+                    <button class="mini-btn">Edit</button></div>
+                  <p class="rc-pane-body">IRS Publication 551 — basis of inherited
+                  property; fair market value at date of death.</p>
+                </div>
+                <div class="rc-pane">
+                  <div class="rc-pane-head"><span class="rc-pane-label">Retrieved content</span></div>
+                  <p class="rc-pane-body">Step-up in basis rules, alternate
+                  valuation date election, and treatment of community property.</p>
+                </div>
+              </div>
+            </details>
+          </article>
+
+          <!-- Card 2 — untouched -->
+          <article class="review-card">
+            <div class="rc-top">
+              <span class="rc-num">02</span>
+              <div class="rc-q">
+                <div class="rc-q-label">Query</div>
+                <div class="rc-q-text">What is the difference between a traditional and a Roth IRA for early withdrawals?</div>
+              </div>
+              <div class="rc-scores">
+                <span class="score-chip chip-s2"><span class="dot"></span>Retrieval <b>2</b></span>
+                <span class="score-chip chip-s1"><span class="dot"></span>Answer <b>1</b></span>
+              </div>
+            </div>
+            <div class="rc-flag">
+              <span class="fi">!</span>
+              <span><b>Why it's flagged.</b> The AI answer adds correct detail the
+              reference omits — review whether the ground truth is incomplete.</span>
+            </div>
+            <div class="rc-compare">
+              <div class="rc-pane reference">
+                <div class="rc-pane-head">
+                  <span class="rc-pane-label">Reference answer</span>
+                  <button class="mini-btn primary">Edit</button>
+                </div>
+                <p class="rc-pane-body">Roth IRA contributions can be withdrawn
+                anytime tax-free; traditional IRA withdrawals before 59&frac12;
+                are taxed.</p>
+              </div>
+              <div class="rc-pane">
+                <div class="rc-pane-head">
+                  <span class="rc-pane-label">AI answer &middot; RAG 2</span>
+                </div>
+                <p class="rc-pane-body">Roth contributions withdraw tax- and
+                penalty-free; earnings and traditional IRA withdrawals before
+                59&frac12; incur a 10% penalty plus income tax, with hardship
+                exceptions.</p>
+              </div>
+            </div>
+            <details class="rc-more">
+              <summary>Show retrieved &amp; referenced content</summary>
+              <div class="rc-more-body">
+                <div class="rc-pane">
+                  <div class="rc-pane-head"><span class="rc-pane-label">Referenced content</span>
+                    <button class="mini-btn">Edit</button></div>
+                  <p class="rc-pane-body">IRA distribution basics — contribution
+                  vs. earnings withdrawal order.</p>
+                </div>
+                <div class="rc-pane">
+                  <div class="rc-pane-head"><span class="rc-pane-label">Retrieved content</span></div>
+                  <p class="rc-pane-body">Early-distribution penalties, the 10%
+                  additional tax, and the list of qualified exceptions.</p>
+                </div>
+              </div>
+            </details>
+          </article>
+
+          <!-- Card 3 — query-quality variants -->
+          <article class="review-card">
+            <div class="rc-top">
+              <span class="rc-num">03</span>
+              <div class="rc-q">
+                <div class="rc-q-label">Query</div>
+                <div class="rc-q-text">Can I deduct it?</div>
+              </div>
+              <div class="rc-scores">
+                <span class="score-chip chip-s1"><span class="dot"></span>Retrieval <b>1</b></span>
+                <span class="score-chip chip-s0"><span class="dot"></span>Answer <b>0</b></span>
+              </div>
+            </div>
+            <div class="rc-flag">
+              <span class="fi">!</span>
+              <span><b>Why it's flagged.</b> The query is too ambiguous to retrieve
+              against. Pick a clearer phrasing to re-run this record with.</span>
+            </div>
+            <div class="rc-variants">
+              <label class="rc-variant sel">
+                <input type="radio" name="q3" checked />
+                Can I deduct home-office expenses on my federal tax return?
+              </label>
+              <label class="rc-variant">
+                <input type="radio" name="q3" />
+                Can I deduct investment advisory fees as a business expense?
+              </label>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-bar">
+      <div class="submit-inner">
+        <span class="count">3 records &nbsp;&middot;&nbsp; <b>1 edited</b></span>
+        <button class="btn-primary">Submit changes</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ---- prototype tab switching ----
+  var tabs = document.querySelectorAll('.proto-tabs button');
+  var screens = document.querySelectorAll('.screen');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('is-active'); });
+      tab.classList.add('is-active');
+      screens.forEach(function (s) { s.classList.remove('is-active'); });
+      document.getElementById(tab.dataset.target).classList.add('is-active');
+      document.querySelector('.proto-stage').scrollTop = 0;
+    });
+  });
+
+  // ---- light / dark theme ----
+  var root = document.documentElement;
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.getElementById('themeLabel').textContent = (t === 'dark') ? 'Light' : 'Dark';
+    document.getElementById('themeIcon').innerHTML = (t === 'dark') ? '&#9728;' : '&#9789;';
+  }
+  function toggleTheme() {
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  document.querySelectorAll('.theme-toggle').forEach(function (b) {
+    b.addEventListener('click', toggleTheme);
+  });
+</script>
+
+</body>
+</html>
