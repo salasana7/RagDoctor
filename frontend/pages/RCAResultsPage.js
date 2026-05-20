@@ -224,7 +224,7 @@ export function RCAResultsPage({ results, dataset }) {
   return (
     <div style={{
       fontFamily: T.font.sans, background: T.color.bg, color: T.color.text,
-      height: "100vh", overflowY: "auto", boxSizing: "border-box",
+      width: "100%", height: "100vh", overflowY: "auto", boxSizing: "border-box",
       display: "flex", flexDirection: "column",
     }}>
       <div style={{
