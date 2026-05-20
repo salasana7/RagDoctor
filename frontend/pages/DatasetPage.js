@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { T, ThemeToggle, useTheme } from "../theme";
 import { BACKEND_URL } from "../constants";
 import { Logo } from "../components/Logo";
@@ -47,78 +47,132 @@ export function DatasetPage({ onDatasetReady }) {
     }
   };
 
-    const isSelected = datasetClicked && selectedDataset === "FIQA Data";
-    return (
+  const isSelected = datasetClicked && selectedDataset === "FIQA Data";
+
+  // Onboarding: a quiet 3-step journey rail that names the whole flow,
+  // replacing the dead-end "Step 1 ·" eyebrow.
+  const journey = [
+    { n: 1, label: "Select dataset", active: true },
+    { n: 2, label: "Compare setups", active: false },
+    { n: 3, label: "Trace root cause", active: false },
+  ];
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      minHeight: "100vh",
+      background: T.color.bg,
+      fontFamily: T.font.sans,
+      // Asymmetric padding nudges the cluster a hair above true centre.
+      padding: "44px 24px 80px",
+      boxSizing: "border-box",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      <DotField
+        dotRadius={1.5}
+        dotSpacing={14}
+        cursorRadius={500}
+        cursorForce={0.1}
+        bulgeOnly
+        bulgeStrength={67}
+        glowRadius={110}
+        sparkle
+        waveAmplitude={0}
+        gradientFrom={dots.gradientFrom}
+        gradientTo={dots.gradientTo}
+        glowColor={dots.glowColor}
+        style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}
+      />
+      <div style={{ position: "absolute", top: "20px", right: "24px", zIndex: 1 }}>
+        <ThemeToggle />
+      </div>
+
+      {/* One centred optical group: hero → journey → card → CTA */}
       <div style={{
+        position: "relative",
+        zIndex: 1,
+        width: "100%",
+        maxWidth: "480px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "flex-start",
-        width: "100%",
-        minHeight: "100vh",
-        background: T.color.bg,
-        fontFamily: T.font.sans,
-        padding: "72px 24px 48px",
-        boxSizing: "border-box",
-        position: "relative",
-        overflow: "hidden",
       }}>
-        <DotField
-          dotRadius={1.5}
-          dotSpacing={14}
-          cursorRadius={500}
-          cursorForce={0.1}
-          bulgeOnly
-          bulgeStrength={67}
-          glowRadius={110}
-          sparkle
-          waveAmplitude={0}
-          gradientFrom={dots.gradientFrom}
-          gradientTo={dots.gradientTo}
-          glowColor={dots.glowColor}
-          style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}
-        />
-        <div style={{ position: "absolute", top: "20px", right: "24px", zIndex: 1 }}>
-          <ThemeToggle />
-        </div>
-        <div className="enter-up" style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "640px", textAlign: "center" }}>
-          <div style={{ display: "flex", justifyContent: "center", margin: "0 0 18px 0" }}>
-            <Logo size="lg" />
-          </div>
+        <div className="enter-up" style={{ width: "100%", textAlign: "center" }}>
+          <Logo size="lg" />
           <p style={{
             color: T.color.textMuted,
-            fontSize: "1.05rem",
+            fontSize: "1.02rem",
             lineHeight: 1.55,
-            margin: "0 auto 40px",
-            maxWidth: "52ch",
+            margin: "16px auto 0",
+            maxWidth: "44ch",
           }}>
             Run RAG configurations side by side, see statistical winners, and trace failures back to retrieval, prompts, or stale ground truth.
           </p>
         </div>
 
-        <div className="enter-up" style={{
-          position: "relative",
-          zIndex: 1,
-          width: "100%",
-          maxWidth: "640px",
-          animationDelay: "80ms",
-          animationDuration: "520ms",
-        }}>
-          <div style={{
-            fontSize: "0.72rem",
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: T.color.textSubtle,
-            marginBottom: "12px",
+        <div
+          className="enter-up"
+          style={{
+            animationDelay: "60ms",
+            marginTop: "30px",
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-          }}>
-            <span>Step 1 · Select a dataset</span>
-            <span style={{ display: "inline-block", animation: "slideInText 2.8s ease-in-out infinite", color: T.color.brandText }}>↓</span>
-          </div>
+            justifyContent: "center",
+            flexWrap: "nowrap",
+            gap: "7px",
+          }}
+        >
+          {journey.map((s, i) => (
+            <Fragment key={s.n}>
+              {i > 0 && (
+                <span style={{ width: "16px", height: "1.5px", background: T.color.border, flexShrink: 0 }} aria-hidden />
+              )}
+              <span style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+                <span style={{
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: T.radius.pill,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.68rem",
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  background: s.active ? T.color.brand : "transparent",
+                  color: s.active ? "#fff" : T.color.textSubtle,
+                  border: s.active ? "none" : `1.5px solid ${T.color.border}`,
+                }}>
+                  {s.n}
+                </span>
+                <span style={{
+                  fontSize: "0.82rem",
+                  fontWeight: s.active ? 600 : 500,
+                  color: s.active ? T.color.text : T.color.textSubtle,
+                }}>
+                  {s.label}
+                </span>
+              </span>
+            </Fragment>
+          ))}
+        </div>
 
+        <div
+          className="enter-up"
+          style={{
+            animationDelay: "110ms",
+            width: "100%",
+            marginTop: "26px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
           <button
             type="button"
             onClick={() => {
@@ -224,9 +278,7 @@ export function DatasetPage({ onDatasetReady }) {
               )}
             </div>
           </button>
-        </div>
 
-        <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "48px", width: "100%", maxWidth: "640px" }}>
           {preprocessingStatus === "done" && (
             <button
               onClick={() => onDatasetReady(selectedDataset)}
@@ -256,5 +308,6 @@ export function DatasetPage({ onDatasetReady }) {
           )}
         </div>
       </div>
-    );
+    </div>
+  );
 }
