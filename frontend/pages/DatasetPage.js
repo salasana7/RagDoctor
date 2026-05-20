@@ -92,12 +92,14 @@ export function DatasetPage({ onDatasetReady }) {
         <ThemeToggle />
       </div>
 
-      {/* One centred optical group: hero → journey → card → CTA */}
+      {/* One centred optical group: hero → journey → card → CTA.
+          No fixed width here — the lg logo is wider than the card, so a
+          narrow cluster would overflow and break centring. Each block
+          constrains its own measure instead. */}
       <div style={{
         position: "relative",
         zIndex: 1,
         width: "100%",
-        maxWidth: "480px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -187,6 +189,7 @@ export function DatasetPage({ onDatasetReady }) {
             }}
             style={{
               width: "100%",
+              maxWidth: "460px",
               textAlign: "left",
               background: T.color.surface,
               border: `1.5px solid ${isSelected ? T.color.accent : T.color.border}`,
