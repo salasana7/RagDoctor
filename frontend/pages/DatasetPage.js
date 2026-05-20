@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { T, ThemeToggle, useTheme } from "../theme";
 import { BACKEND_URL } from "../constants";
 import { Logo } from "../components/Logo";
@@ -8,9 +8,7 @@ import DotField from "../components/DotField";
 
 export function DatasetPage({ onDatasetReady }) {
   const [selectedDataset, setSelectedDataset] = useState("");
-  const [datasetClicked, setDatasetClicked] = useState(false);
   const [preprocessingStatus, setPreprocessingStatus] = useState("idle");
-  const [preprocessingMessage, setPreprocessingMessage] = useState("");
   const { theme } = useTheme();
 
   // Interactive dot field behind the content. The dot/glow colors must
@@ -21,11 +19,9 @@ export function DatasetPage({ onDatasetReady }) {
       ? { gradientFrom: "rgba(235, 228, 216, 0.5)", gradientTo: "rgba(180, 151, 207, 0.3)", glowColor: "#2E2440" }
       : { gradientFrom: "#000000", gradientTo: "rgba(180, 151, 207, 0.25)", glowColor: "#A374BD" };
 
-  const handleFIQASelect = async () => {
+  const handleTryNow = async () => {
     setSelectedDataset("FIQA Data");
-    setDatasetClicked(true);
     setPreprocessingStatus("running");
-    setPreprocessingMessage("Preprocessing the data ...");
     try {
       await fetch(`https://${BACKEND_URL}/load-fiqa`, {
         method: "POST",
@@ -35,7 +31,6 @@ export function DatasetPage({ onDatasetReady }) {
       const poll = setInterval(async () => {
         const res = await fetch(`https://${BACKEND_URL}/preprocessing-status`);
         const data = await res.json();
-        setPreprocessingMessage(data.message);
         if (data.status === "done" || data.status === "error") {
           setPreprocessingStatus(data.status);
           clearInterval(poll);
@@ -43,11 +38,13 @@ export function DatasetPage({ onDatasetReady }) {
       }, 2000);
     } catch (err) {
       setPreprocessingStatus("error");
-      setPreprocessingMessage("Error starting preprocessing.");
     }
   };
 
-  const isSelected = datasetClicked && selectedDataset === "FIQA Data";
+  // One-click flow: once preprocessing finishes, go straight to the A/B test.
+  useEffect(() => {
+    if (preprocessingStatus === "done") onDatasetReady(selectedDataset);
+  }, [preprocessingStatus, selectedDataset, onDatasetReady]);
 
   // Onboarding: a quiet 3-step journey rail that names the whole flow,
   // replacing the dead-end "Step 1 ·" eyebrow.
@@ -56,6 +53,8 @@ export function DatasetPage({ onDatasetReady }) {
     { n: 2, label: "Compare setups", active: false },
     { n: 3, label: "Trace root cause", active: false },
   ];
+
+  const busy = preprocessingStatus === "running" || preprocessingStatus === "done";
 
   return (
     <div style={{
@@ -92,7 +91,7 @@ export function DatasetPage({ onDatasetReady }) {
         <ThemeToggle />
       </div>
 
-      {/* One centred optical group: hero → journey → card → CTA.
+      {/* One centred optical group: hero → journey → dataset → CTA.
           No fixed width here — the lg logo is wider than the card, so a
           narrow cluster would overflow and break centring. Each block
           constrains its own measure instead. */}
@@ -172,120 +171,91 @@ export function DatasetPage({ onDatasetReady }) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "20px",
+            gap: "18px",
           }}
         >
-          <button
-            type="button"
-            onClick={() => {
-              if (isSelected) {
-                setSelectedDataset("");
-                setDatasetClicked(false);
-                setPreprocessingStatus("idle");
-                setPreprocessingMessage("");
-              } else {
-                handleFIQASelect();
-              }
-            }}
-            style={{
-              width: "100%",
-              maxWidth: "460px",
-              textAlign: "left",
-              background: T.color.surface,
-              border: `1.5px solid ${isSelected ? T.color.accent : T.color.border}`,
-              borderRadius: T.radius.lg,
-              padding: "20px 22px",
-              cursor: "pointer",
-              boxShadow: isSelected ? T.shadow.md : T.shadow.sm,
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: "20px",
-            }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
-                <span style={{
-                  fontSize: "1.1rem",
-                  fontWeight: 700,
-                  color: T.color.text,
-                  letterSpacing: "-0.005em",
-                }}>
-                  FIQA
-                </span>
-                <span style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 600,
-                  padding: "2px 8px",
-                  borderRadius: T.radius.pill,
-                  background: T.color.surfaceSunk,
-                  color: T.color.textMuted,
-                  letterSpacing: "0.02em",
-                }}>
-                  30 records
-                </span>
-              </div>
-              <div style={{ color: T.color.textMuted, fontSize: "0.9rem", lineHeight: 1.45 }}>
-                Finance Q&amp;A benchmark.{" "}
-                <a
-                  href="https://huggingface.co/datasets/vibrantlabsai/fiqa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ fontWeight: 500 }}
-                >
-                  View on Hugging Face →
-                </a>
-              </div>
-              {isSelected && preprocessingStatus !== "idle" && (
-                <div style={{
-                  marginTop: "14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  fontSize: "0.85rem",
-                  color: preprocessingStatus === "running" ? T.color.textMuted : T.color.success,
-                }}>
-                  {preprocessingStatus === "running" ? (
-                    <div style={{
-                      width: "14px", height: "14px",
-                      border: `2px solid ${T.color.border}`,
-                      borderTopColor: T.color.accent,
-                      borderRadius: "50%",
-                      animation: "spin 0.8s linear infinite",
-                      flexShrink: 0,
-                    }} />
-                  ) : (
-                    <span style={{ color: T.color.success }} aria-hidden>✓</span>
-                  )}
-                  <span>{preprocessingMessage}</span>
-                </div>
-              )}
+          {/* FIQA — a quiet info panel for context, not a chooser. There is
+              only one dataset, so there is nothing to "select". */}
+          <div style={{
+            width: "100%",
+            maxWidth: "460px",
+            background: T.color.surface,
+            border: `1px solid ${T.color.border}`,
+            borderRadius: T.radius.lg,
+            padding: "16px 20px",
+            textAlign: "left",
+            boxShadow: T.shadow.sm,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "5px" }}>
+              <span style={{
+                fontSize: "1.05rem",
+                fontWeight: 700,
+                color: T.color.text,
+                letterSpacing: "-0.005em",
+              }}>
+                FIQA
+              </span>
+              <span style={{
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                padding: "2px 8px",
+                borderRadius: T.radius.pill,
+                background: T.color.surfaceSunk,
+                color: T.color.textMuted,
+                letterSpacing: "0.02em",
+              }}>
+                30 records
+              </span>
             </div>
-            <div style={{
-              width: "22px",
-              height: "22px",
-              borderRadius: T.radius.pill,
-              border: `2px solid ${isSelected ? T.color.accent : T.color.borderStrong}`,
-              background: isSelected ? T.color.accent : "transparent",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              marginTop: "2px",
-            }}>
-              {isSelected && (
-                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
-                  <path d="M2.5 6.2l2.4 2.4L9.5 3.6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+            <div style={{ color: T.color.textMuted, fontSize: "0.88rem", lineHeight: 1.45 }}>
+              Finance Q&amp;A benchmark.{" "}
+              <a
+                href="https://huggingface.co/datasets/vibrantlabsai/fiqa"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontWeight: 500 }}
+              >
+                View on Hugging Face →
+              </a>
             </div>
-          </button>
+          </div>
 
-          {preprocessingStatus === "done" && (
+          {/* The single primary action. One click → preprocess → A/B test. */}
+          {busy ? (
             <button
-              onClick={() => onDatasetReady(selectedDataset)}
-              className="enter-up"
+              type="button"
+              disabled
+              style={{
+                background: T.color.brand,
+                color: "#fff",
+                border: "none",
+                borderRadius: T.radius.md,
+                padding: "16px 32px",
+                fontSize: "1.05rem",
+                fontWeight: 600,
+                cursor: "default",
+                opacity: 0.9,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 12,
+                letterSpacing: "0.01em",
+              }}
+            >
+              <div style={{
+                width: "16px",
+                height: "16px",
+                border: "2px solid rgba(255,255,255,0.35)",
+                borderTopColor: "#fff",
+                borderRadius: "50%",
+                animation: "spin 0.8s linear infinite",
+                flexShrink: 0,
+              }} />
+              <span>Preprocessing the dataset…</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleTryNow}
               style={{
                 position: "relative",
                 overflow: "hidden",
@@ -293,7 +263,7 @@ export function DatasetPage({ onDatasetReady }) {
                 color: "#fff",
                 border: "none",
                 borderRadius: T.radius.md,
-                padding: "16px 36px",
+                padding: "16px 38px",
                 fontSize: "1.05rem",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -305,8 +275,10 @@ export function DatasetPage({ onDatasetReady }) {
               }}
             >
               <span className="cta-fill" />
-              <span>Start RAG A/B test</span>
-              <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.15rem", lineHeight: 1 }} aria-hidden>→</span>
+              <span>{preprocessingStatus === "error" ? "Something went wrong — retry" : "Try it now"}</span>
+              {preprocessingStatus !== "error" && (
+                <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.15rem", lineHeight: 1 }} aria-hidden>→</span>
+              )}
             </button>
           )}
         </div>
