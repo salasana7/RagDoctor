@@ -39,6 +39,7 @@
   --shadowMd: 0 4px 14px rgba(86, 64, 150, 0.10);
   --shadowLg: 0 16px 40px rgba(86, 64, 150, 0.14);
   --shadowFocus: 0 0 0 3px rgba(135, 93, 192, 0.32);
+  --shadowUp: 0 -4px 16px rgba(86, 64, 150, 0.10);
   --spinner-glow: rgba(135, 93, 192, 0.34);
   /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #F7F4EC;
@@ -107,6 +108,7 @@
   --shadowMd: 0 6px 18px rgba(0, 0, 0, 0.50);
   --shadowLg: 0 18px 46px rgba(0, 0, 0, 0.62);
   --shadowFocus: 0 0 0 3px rgba(151, 114, 206, 0.42);
+  --shadowUp: 0 -6px 18px rgba(0, 0, 0, 0.50);
   --spinner-glow: rgba(170, 132, 226, 0.42);
   /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #100C1A;

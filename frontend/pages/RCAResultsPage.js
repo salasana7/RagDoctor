@@ -309,7 +309,7 @@ export function RCAResultsPage({ results, dataset }) {
               style={{
                 fontSize: "0.86rem", fontWeight: 600, cursor: "pointer",
                 padding: "9px 20px", borderRadius: T.radius.md,
-                background: T.color.brand, color: "#fff", border: "none",
+                background: T.color.brand, color: T.color.onColorLight, border: "none",
               }}
             >
               Confirm
@@ -351,7 +351,8 @@ export function RCAResultsPage({ results, dataset }) {
             }}>
               <div style={{
                 width: `${(editedCount / reEvalRows.length) * 100}%`, height: "100%",
-                background: T.color.sage, borderRadius: T.radius.pill, transition: "width 220ms",
+                background: T.color.sage, borderRadius: T.radius.pill,
+                transition: "width 220ms var(--ease-out-quart)",
               }} />
             </div>
             <span style={{ fontSize: "0.82rem", color: T.color.textMuted }}>
@@ -478,7 +479,7 @@ export function RCAResultsPage({ results, dataset }) {
       <div style={{
         position: "sticky", bottom: 0,
         background: T.color.surface, borderTop: `1px solid ${T.color.border}`,
-        boxShadow: "0 -4px 16px rgba(86,64,150,0.10)",
+        boxShadow: T.shadow.up,
       }}>
         <div style={{
           maxWidth: MAXW, margin: "0 auto", padding: "14px 24px",
@@ -492,10 +493,10 @@ export function RCAResultsPage({ results, dataset }) {
           <button
             onClick={handleSubmit}
             style={{
-              background: T.color.brand, color: "#fff", border: "none",
+              background: T.color.brand, color: T.color.onColorLight, border: "none",
               borderRadius: T.radius.md, padding: "11px 28px",
               fontSize: "0.92rem", fontWeight: 600, cursor: "pointer",
-              boxShadow: "0 8px 24px rgba(86,64,150,0.26)", letterSpacing: "0.01em",
+              boxShadow: T.shadow.md, letterSpacing: "0.01em",
             }}
           >
             Submit changes

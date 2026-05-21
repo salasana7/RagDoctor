@@ -583,7 +583,6 @@ export function ABTestPage({ selectedDataset }) {
                       alignItems: "center",
                       gap: "14px",
                       boxSizing: "border-box",
-                      animationDelay: "0ms",
                     }}>
                       <div aria-hidden style={{
                         flexShrink: 0,
