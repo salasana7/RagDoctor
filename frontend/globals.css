@@ -311,9 +311,9 @@ button:hover .cta-fill { clip-path: inset(0 0 0 0); }
 }
 .spark-glow { animation: sparkGlow 3.6s ease-in-out infinite; will-change: opacity, transform; }
 .spark-shine { animation: sparkShine 3.6s ease-in-out infinite; transform-origin: center; will-change: transform; }
-/* Hero nav: 44px touch targets without resizing the shared controls app-wide. */
-.hero-navcluster .icon-btn { height: 44px !important; }
-.hero-navcluster button.icon-btn { width: 44px !important; }
+/* App nav: 44px touch targets without resizing the shared icon controls. */
+.app-navcluster .icon-btn { height: 44px !important; }
+.app-navcluster button.icon-btn { width: 44px !important; }
 @media (max-width: 640px) {
   .hero-petal--hide-sm, .hero-spark--hide-sm { display: none !important; }
   .hero-step-rest, .hero-sub-br { display: none !important; }

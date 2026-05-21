@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { T, ThemeToggle } from "../theme";
+import { T } from "../theme";
 import { BACKEND_URL, embeddingModels, answerGenLLMModels, RETRIEVAL_SCORE_DEFS, ANSWER_SCORE_DEFS } from "../constants";
 import { computeAQCI, parseSuggestions } from "../stats";
-import { Logo, GitHubMark, GitHubStars } from "../components/Logo";
+import { Nav } from "../components/Nav";
 import { RAGSettings } from "../components/RAGSettings";
 import { EvalStackedBarChart } from "../components/EvalStackedBarChart";
 import { SuggestionItem } from "../components/common";
@@ -325,20 +325,9 @@ export function ABTestPage({ selectedDataset }) {
       boxSizing: "border-box",
       overflow: "hidden",
     }}>
-      {/* ── Top Header Bar ── */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 28px",
-        height: "60px",
-        background: T.color.surface,
-        borderBottom: `1px solid ${T.color.border}`,
-        flexShrink: 0,
-      }}>
-        <Logo />
-
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      {/* ── Top Header Bar — shared nav + the dataset-status pill ── */}
+      <Nav extras={
+        <>
           {/* Dataset status */}
           <div style={{
             display: "inline-flex",
@@ -360,36 +349,8 @@ export function ABTestPage({ selectedDataset }) {
           </div>
 
           <div style={{ width: "1px", height: "22px", background: T.color.border }} aria-hidden />
-
-          <ThemeToggle />
-
-          {/* GitHub icon button */}
-          <a
-            href="https://github.com/hanhanwu/RagDoctor"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Open GitHub repository"
-            aria-label="Open GitHub repository"
-            className="icon-btn"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "36px",
-              height: "36px",
-              borderRadius: T.radius.md,
-              border: `1px solid ${T.color.border}`,
-              background: T.color.surface,
-              color: T.color.textMuted,
-              textDecoration: "none",
-            }}
-          >
-            <GitHubMark />
-          </a>
-
-          <GitHubStars />
-        </div>
-      </div>
+        </>
+      } />
 
       {/* ── Body: 3-column layout ── */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>

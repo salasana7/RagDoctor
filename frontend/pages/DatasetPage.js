@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, Fragment } from "react";
-import { T, ThemeToggle } from "../theme";
+import { T } from "../theme";
 import { BACKEND_URL } from "../constants";
-import { GitHubMark, GitHubStars } from "../components/Logo";
+import { Nav } from "../components/Nav";
 import HeroBackground from "../components/HeroBackground";
 
 // ─── Page 1: Dataset Selection ───────────────────────────────────────────────
@@ -56,25 +56,6 @@ function SparkMark() {
           <circle r="2" fill="#FFFFFF" opacity="0.9" />
         </g>
       </svg>
-    </div>
-  );
-}
-
-// Top-bar brand lockup: full product name with a smaller "Playground"
-// qualifier, the gradient kept as the signature treatment.
-function BrandLockup() {
-  return (
-    <div style={{
-      display: "flex",
-      alignItems: "baseline",
-      fontFamily: T.font.sans,
-      letterSpacing: "-0.02em",
-      lineHeight: 1,
-      whiteSpace: "nowrap",
-    }}>
-      <span style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--hero-ink)" }}>RAG Doctor</span>
-      <span aria-hidden style={{ fontSize: "1rem", fontWeight: 400, color: "var(--hero-play-from)", margin: "0 0.3em" }}>/</span>
-      <span className="hero-playground" style={{ fontSize: "1rem", fontWeight: 700 }}>Playground</span>
     </div>
   );
 }
@@ -152,56 +133,7 @@ export function DatasetPage({ onDatasetReady }) {
     }}>
       <HeroBackground />
 
-      {/* Top bar: brand lockup, then theme toggle + GitHub, mirroring the
-          page-2 header (without its dataset-status pill). */}
-      <header style={{
-        position: "relative",
-        zIndex: 2,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "16px",
-        padding: "20px 26px",
-      }}>
-        <BrandLockup />
-        <div className="hero-navcluster" style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          // Pin the shared toggle / GitHub controls to the hero palette.
-          "--surface": "var(--hero-surface)",
-          "--surfaceMuted": "var(--hero-surface-2)",
-          "--border": "var(--hero-border)",
-          "--borderStrong": "var(--hero-border-strong)",
-          "--textMuted": "var(--hero-ink-soft)",
-          "--text": "var(--hero-ink)",
-        }}>
-          <ThemeToggle />
-          <a
-            href="https://github.com/hanhanwu/RagDoctor"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Open GitHub repository"
-            aria-label="Open GitHub repository"
-            className="icon-btn"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "44px",
-              height: "44px",
-              borderRadius: T.radius.md,
-              border: `1px solid ${T.color.border}`,
-              background: T.color.surface,
-              color: T.color.textMuted,
-              textDecoration: "none",
-            }}
-          >
-            <GitHubMark />
-          </a>
-          <GitHubStars />
-        </div>
-      </header>
+      <Nav />
 
       {/* Centred hero cluster, filling the space below the top bar. */}
       <div style={{
