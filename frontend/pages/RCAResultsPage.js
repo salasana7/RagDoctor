@@ -6,6 +6,24 @@ import { Stepper } from "../components/Stepper";
 
 export function RCAResultsPage({ results, dataset }) {
   useFonts();
+
+  // ── Hooks first — declared before the early return so hook order stays
+  //    stable whether or not `results` has arrived yet (Rules of Hooks). ──
+  // editState: { [rowIndex]: { context?: string, referenced_answer?: string } }
+  const [editState, setEditState] = useState({});
+  // draftState: in-progress edits, same shape
+  const [draftState, setDraftState] = useState({});
+  // which field is open for editing in the modal: { i, field, label } | null
+  const [editingCell, setEditingCell] = useState(null);
+
+  // Close the edit modal on Escape.
+  useEffect(() => {
+    if (!editingCell) return;
+    const onKey = (e) => { if (e.key === "Escape") setEditingCell(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editingCell]);
+
   if (!results) return (
     <div style={{
       padding: "48px",
@@ -61,13 +79,6 @@ export function RCAResultsPage({ results, dataset }) {
     return merged;
   }
 
-  // editState: { [rowIndex]: { context?: string, referenced_answer?: string } }
-  const [editState, setEditState] = useState({});
-  // draftState: in-progress edits, same shape
-  const [draftState, setDraftState] = useState({});
-  // which field is open for editing in the modal: { i, field, label } | null
-  const [editingCell, setEditingCell] = useState(null);
-
   function getDisplayValue(i, field, item) {
     if (editState[i]?.[field] !== undefined) return editState[i][field];
     if (field === "context") return item.context ?? "";
@@ -96,14 +107,6 @@ export function RCAResultsPage({ results, dataset }) {
   function closeEdit() {
     setEditingCell(null);
   }
-
-  // Close the edit modal on Escape.
-  useEffect(() => {
-    if (!editingCell) return;
-    const onKey = (e) => { if (e.key === "Escape") setEditingCell(null); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [editingCell]);
 
   function handleSubmit() {
     const edits = Object.entries(editState)
