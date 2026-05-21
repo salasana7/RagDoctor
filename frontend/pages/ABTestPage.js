@@ -12,7 +12,8 @@ import { ActivityLog } from "../components/ActivityLog";
 // Primary gradient CTA — the hero-styled action button used across the A/B
 // flow. Visual identity lives in the .cta-button class; `style` carries the
 // per-instance layout (width, padding, font-size, margin).
-function CtaButton({ onClick, label, className, style }) {
+function CtaButton({ onClick, label, className, style, dualArrows }) {
+  const arrowStyle = { display: "inline-block", fontSize: "1.05rem", flexShrink: 0 };
   return (
     <button
       type="button"
@@ -21,9 +22,20 @@ function CtaButton({ onClick, label, className, style }) {
       style={style}
     >
       <span className="cta-fill" />
-      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+      {/* dualArrows: one arrow per settings panel — points left at RAG 1,
+          right at RAG 2. Single mode: just a trailing "go" arrow. */}
+      <span style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: dualArrows ? "space-between" : "center",
+        gap: 10,
+        width: dualArrows ? "100%" : "auto",
+      }}>
+        {dualArrows && (
+          <span className="nudge-on-hover-left" style={arrowStyle} aria-hidden>←</span>
+        )}
         <span>{label}</span>
-        <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.05rem" }} aria-hidden>→</span>
+        <span className="nudge-on-hover" style={arrowStyle} aria-hidden>→</span>
       </span>
     </button>
   );
@@ -465,6 +477,7 @@ export function ABTestPage({ selectedDataset }) {
                 <CtaButton
                   onClick={handleRunRAGs}
                   className="enter-up"
+                  dualArrows
                   label={ragStatus === "done" && settingsChangedAfterRAG
                     ? "Compare the new performance"
                     : "Configure both sides, then run comparison"}

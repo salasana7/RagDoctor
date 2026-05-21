@@ -198,8 +198,9 @@ a:hover { color: var(--brandHover); }
 
 /* Press-target nudge (hover-only, fine pointer) */
 @media (hover: hover) and (pointer: fine) {
-  .nudge-on-hover { transition: transform 220ms var(--ease-out-quart); }
+  .nudge-on-hover, .nudge-on-hover-left { transition: transform 220ms var(--ease-out-quart); }
   button:hover .nudge-on-hover { transform: translateX(3px); }
+  button:hover .nudge-on-hover-left { transform: translateX(-3px); }
 }
 
 /* Icon button (rounded square) */
@@ -361,6 +362,6 @@ button:hover .cta-fill { clip-path: inset(0 0 0 0); }
     animation-iteration-count: 1 !important;
   }
   button:not(:disabled):active { transform: none !important; }
-  .nudge-on-hover { transition: none !important; transform: none !important; }
+  .nudge-on-hover, .nudge-on-hover-left { transition: none !important; transform: none !important; }
   .cta-fill { display: none; }
 }
