@@ -26,7 +26,7 @@ export function RCAResultsPage({ results, dataset }) {
         border: `3px solid ${T.color.border}`,
         borderTopColor: T.color.coral,
         borderRadius: "50%",
-        animation: "spin 0.9s linear infinite",
+        animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
       }} />
       Analysis is running. This page will update automatically when done.
     </div>

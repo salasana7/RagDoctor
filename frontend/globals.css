@@ -49,6 +49,7 @@
   --shadowMd: 0 4px 14px rgba(86, 64, 150, 0.10);
   --shadowLg: 0 16px 40px rgba(86, 64, 150, 0.14);
   --shadowFocus: 0 0 0 3px rgba(135, 93, 192, 0.32);
+  --spinner-glow: rgba(135, 93, 192, 0.34);
   /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #F7F4EC;
   --hero-bg-lift: #FDFCF7;
@@ -125,6 +126,7 @@
   --shadowMd: 0 6px 18px rgba(0, 0, 0, 0.50);
   --shadowLg: 0 18px 46px rgba(0, 0, 0, 0.62);
   --shadowFocus: 0 0 0 3px rgba(151, 114, 206, 0.42);
+  --spinner-glow: rgba(170, 132, 226, 0.42);
   /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #100C1A;
   --hero-bg-lift: #1C1630;
@@ -270,6 +272,12 @@ a:hover { color: var(--brandHover); }
 button:hover .cta-fill { clip-path: inset(0 0 0 0); }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+/* Soft theme-tinted halo that breathes around loading spinners — paired with
+   `spin` as a second animation so the rotation and the glow stay independent. */
+@keyframes spinnerGlow {
+  0%, 100% { box-shadow: 0 0 5px 0 var(--spinner-glow); }
+  50%      { box-shadow: 0 0 14px 2px var(--spinner-glow); }
+}
 @keyframes dotFade { 0%, 100% { opacity: 0.25; } 30%, 70% { opacity: 1; } }
 @keyframes fingerBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }

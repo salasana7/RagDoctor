@@ -404,7 +404,7 @@ export function ABTestPage({ selectedDataset }) {
                 border: `2px solid ${T.color.saffronSoft}`,
                 borderTopColor: T.color.warning,
                 borderRadius: "50%",
-                animation: "spin 0.8s linear infinite",
+                animation: "spin 0.8s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
               }} />
               {queuePosition - 1 === 0
                 ? "You're next. Waiting for the current run to finish."
@@ -418,7 +418,7 @@ export function ABTestPage({ selectedDataset }) {
                 border: `2px solid ${T.color.border}`,
                 borderTopColor: T.color.coral,
                 borderRadius: "50%",
-                animation: "spin 0.9s linear infinite",
+                animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
               }} />
               <div style={{ fontSize: "1.15rem", fontWeight: 600, color: T.color.brandText, letterSpacing: "-0.005em" }}>
                 Running RAG pipelines
@@ -716,7 +716,7 @@ export function ABTestPage({ selectedDataset }) {
                         border: `3px solid ${T.color.border}`,
                         borderTopColor: T.color.coral,
                         borderRadius: "50%",
-                        animation: "spin 0.9s linear infinite",
+                        animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
                       }} />
                       <div style={{ fontSize: "1.05rem", fontWeight: 600, color: T.color.brandText }}>
                         Running root cause analysis
