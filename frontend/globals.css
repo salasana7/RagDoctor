@@ -207,8 +207,9 @@ a:hover { color: var(--brandHover); }
 
 /* Press-target nudge (hover-only, fine pointer) */
 @media (hover: hover) and (pointer: fine) {
-  .nudge-on-hover { transition: transform 220ms var(--ease-out-quart); }
+  .nudge-on-hover, .nudge-on-hover-left { transition: transform 220ms var(--ease-out-quart); }
   button:hover .nudge-on-hover { transform: translateX(3px); }
+  button:hover .nudge-on-hover-left { transform: translateX(-3px); }
 }
 
 /* Icon button (rounded square) */
@@ -217,6 +218,14 @@ a:hover { color: var(--brandHover); }
 }
 .icon-btn:hover { background: var(--surfaceMuted); border-color: var(--borderStrong); color: var(--text); }
 .icon-btn:active { transform: scale(0.94); }
+
+/* Nav controls: highlight the box on hover — shared across every page.
+   !important overrides the per-button inline background/border set in
+   theme.js / Logo.js (same pattern as the .app-navcluster sizing rules). */
+.app-navcluster .icon-btn:hover {
+  background: rgba(135, 93, 192, 0.12) !important;
+  border-color: var(--hero-accent) !important;
+}
 
 /* Balance slider thumb */
 .balance-slider {

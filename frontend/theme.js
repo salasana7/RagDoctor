@@ -83,9 +83,10 @@ export function resolveInitialTheme() {
   try {
     const saved = window.localStorage.getItem(THEME_KEY);
     if (saved === "light" || saved === "dark") return saved;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    // Default to dark when the visitor hasn't chosen a theme yet.
+    return "dark";
   } catch {
-    return "light";
+    return "dark";
   }
 }
 
