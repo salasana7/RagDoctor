@@ -7,6 +7,7 @@ import { Stepper } from "../components/Stepper";
 import { RAGSettings } from "../components/RAGSettings";
 import { EvalStackedBarChart } from "../components/EvalStackedBarChart";
 import { SuggestionItem } from "../components/common";
+import { ActivityLog } from "../components/ActivityLog";
 
 // ─── Page 2: RAG A/B Test ─────────────────────────────────────────────────────
 
@@ -23,9 +24,11 @@ export function ABTestPage({ selectedDataset }) {
   const [evalResults, setEvalResults] = useState({ rag1: null, rag2: null });
   const [jobId, setJobId] = useState(null);
   const [queuePosition, setQueuePosition] = useState(null);
+  const [stages, setStages] = useState([]);          // live RAG-run activity log
   const pollRef = useRef(null);
   const [rcaStatus, setRcaStatus] = useState("idle");
   const [rcaJobId, setRcaJobId] = useState(null);
+  const [rcaStages, setRcaStages] = useState([]);    // live RCA activity log
   const rcaPollRef = useRef(null);
   const [settingsChangedAfterRCA, setSettingsChangedAfterRCA] = useState(false);
   const [rcaData, setRcaData] = useState(null);
@@ -156,6 +159,8 @@ export function ABTestPage({ selectedDataset }) {
     setPendingSwap(null);
     setEvalResults({ rag1: null, rag2: null });
     setJobId(null);
+    setStages([]);
+    setRcaStages([]);
     setRcaStatus('idle');
     setRcaData(null);
     setSettingsChangedAfterRAG(false);
@@ -175,6 +180,7 @@ export function ABTestPage({ selectedDataset }) {
       try {
         const res = await fetch(`https://${BACKEND_URL}/rca-status/${rcaJobId}`);
         const data = await res.json();
+        if (Array.isArray(data.stages)) setRcaStages(data.stages);
         if (data.status === "done") {
           const controlGroup = ciResultRef.current?.rag2Better === false ? "rag1" : "rag2";
           const results = {
@@ -203,7 +209,7 @@ export function ABTestPage({ selectedDataset }) {
       } catch {
         clearInterval(rcaPollRef.current);
       }
-    }, 5000);
+    }, 2000);
     return () => clearInterval(rcaPollRef.current);
   }, [rcaJobId]);
 
@@ -243,6 +249,7 @@ export function ABTestPage({ selectedDataset }) {
   const handleRunRCA = async () => {
     setSettingsChangedAfterRCA(false);
     setRcaStatus("running");
+    setRcaStages([]);
     localStorage.removeItem('rcaResults');
     try {
       const res = await fetch(`https://${BACKEND_URL}/run-rca/${jobId}`, { method: "POST" });
@@ -259,6 +266,7 @@ export function ABTestPage({ selectedDataset }) {
       try {
         const res = await fetch(`https://${BACKEND_URL}/job-status/${jobId}`);
         const data = await res.json();
+        if (Array.isArray(data.stages)) setStages(data.stages);
         if (data.status === "queued") {
           setRagStatus("queued");
           setQueuePosition(data.position);
@@ -276,11 +284,13 @@ export function ABTestPage({ selectedDataset }) {
       } catch {
         clearInterval(pollRef.current);
       }
-    }, 5000);
+    }, 2000);
     return () => clearInterval(pollRef.current);
   }, [jobId]);
 
   const handleRunRAGs = async () => {
+    setStages([]);
+    setRcaStages([]);
     try {
       const body = {
         dataset: selectedDataset,
@@ -411,7 +421,7 @@ export function ABTestPage({ selectedDataset }) {
                 : `${queuePosition - 1} user${queuePosition - 1 === 1 ? "" : "s"} waiting ahead of you`}
             </div>
           ) : ragStatus === "running" ? (
-            <div style={{ marginTop: "40px", textAlign: "center" }}>
+            <div style={{ marginTop: "40px", textAlign: "center", width: "100%" }}>
               <div style={{
                 width: "48px", height: "48px",
                 margin: "0 auto 18px",
@@ -426,8 +436,14 @@ export function ABTestPage({ selectedDataset }) {
                 <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0.3s" }}>.</span>
                 <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0.6s" }}>.</span>
               </div>
-              <div style={{ marginTop: "8px", fontSize: "0.88rem", color: T.color.textMuted }}>
-                Comparing retrieval and answer quality across both configurations.
+              <div style={{ marginTop: stages.length > 0 ? "18px" : "8px" }}>
+                {stages.length > 0 ? (
+                  <ActivityLog stages={stages} />
+                ) : (
+                  <div style={{ fontSize: "0.88rem", color: T.color.textMuted }}>
+                    Comparing retrieval and answer quality across both configurations.
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -709,7 +725,7 @@ export function ABTestPage({ selectedDataset }) {
                         </div>
                   )}
                   {!settingsChangedAfterRCA && !settingsChangedAfterRAG && rcaStatus === "running" && (
-                    <div style={{ marginTop: "40px", textAlign: "center" }}>
+                    <div style={{ marginTop: "40px", textAlign: "center", width: "100%" }}>
                       <div style={{
                         width: "40px", height: "40px",
                         margin: "0 auto 14px",
@@ -724,6 +740,11 @@ export function ABTestPage({ selectedDataset }) {
                         <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0.3s" }}>.</span>
                         <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0.6s" }}>.</span>
                       </div>
+                      {rcaStages.length > 0 && (
+                        <div style={{ marginTop: "18px" }}>
+                          <ActivityLog stages={rcaStages} />
+                        </div>
+                      )}
                     </div>
                   )}
                   {!settingsChangedAfterRCA && !settingsChangedAfterRAG && rcaStatus === "done" && rcaData && (
