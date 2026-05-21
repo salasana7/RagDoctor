@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 // ─── Hero backdrop ────────────────────────────────────────────────────────────
-// Spring / moon mood for the homepage hero, built from CSS gradients and inline
+// Soft spring mood for the homepage hero, built from CSS gradients and inline
 // SVG so it stays responsive and re-themes through the --hero-* custom
 // properties in globals.css. Purely decorative: the whole layer is aria-hidden,
 // non-interactive, and sits behind the hero content via z-index.

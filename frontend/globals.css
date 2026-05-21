@@ -48,12 +48,12 @@
   --shadowMd: 0 4px 14px rgba(80, 50, 20, 0.08);
   --shadowLg: 0 16px 40px rgba(80, 50, 20, 0.12);
   --shadowFocus: 0 0 0 3px rgba(122, 181, 125, 0.30);
-  /* ── Hero (spring / moon mood) — scoped to the homepage hero ── */
+  /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #F7F4EC;
   --hero-bg-lift: #FDFCF7;
   --hero-ink: #221E38;
   --hero-ink-soft: #565070;
-  --hero-ink-faint: #8C8699;
+  --hero-ink-faint: #6F6C84;
   --hero-surface: #FCFBFE;
   --hero-surface-2: #EEEAF8;
   --hero-border: #E5E1F0;
@@ -69,7 +69,6 @@
   --hero-petal-b: #E3C6E7;
   --hero-spark: #B6A1DD;
   --hero-step-line: #DAD4EA;
-  --hero-ok: #4E9C68;
   --hero-cta-from: #F7C9D2;
   --hero-cta-to: #CFC4F0;
   --hero-cta-text: #3A2E50;
@@ -124,12 +123,12 @@
   --shadowMd: 0 6px 18px rgba(0, 0, 0, 0.50);
   --shadowLg: 0 18px 46px rgba(0, 0, 0, 0.62);
   --shadowFocus: 0 0 0 3px rgba(122, 181, 125, 0.38);
-  /* ── Hero (spring / moon mood) — scoped to the homepage hero ── */
+  /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
   --hero-bg: #100C1A;
   --hero-bg-lift: #1C1630;
   --hero-ink: #ECE6DF;
   --hero-ink-soft: #A39DAC;
-  --hero-ink-faint: #6E6878;
+  --hero-ink-faint: #807A8E;
   --hero-surface: #191325;
   --hero-surface-2: #251E38;
   --hero-border: #322A45;
@@ -145,7 +144,6 @@
   --hero-petal-b: #9D85C9;
   --hero-spark: #CBB8EE;
   --hero-step-line: #3A3150;
-  --hero-ok: #8AC28D;
   --hero-cta-from: #E882B0;
   --hero-cta-to: #A079D6;
   --hero-cta-text: #2C2030;
@@ -300,6 +298,19 @@ button:hover .cta-fill { clip-path: inset(0 0 0 0); }
 }
 .hero-petal { animation: heroPetalFloat var(--p-dur, 14s) ease-in-out infinite; will-change: transform; }
 .hero-spark { animation: heroTwinkle var(--tw-dur, 6s) ease-in-out infinite; will-change: opacity, transform; }
+@keyframes sparkGlow {
+  0%, 100% { opacity: 0.38; transform: scale(0.88); }
+  50% { opacity: 0.82; transform: scale(1.12); }
+}
+@keyframes sparkShine {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.07) rotate(9deg); }
+}
+.spark-glow { animation: sparkGlow 3.6s ease-in-out infinite; will-change: opacity, transform; }
+.spark-shine { animation: sparkShine 3.6s ease-in-out infinite; transform-origin: center; will-change: transform; }
+/* Hero nav: 44px touch targets without resizing the shared controls app-wide. */
+.hero-navcluster .icon-btn { height: 44px !important; }
+.hero-navcluster button.icon-btn { width: 44px !important; }
 @media (max-width: 640px) {
   .hero-petal--hide-sm, .hero-spark--hide-sm { display: none !important; }
   .hero-step-rest, .hero-sub-br { display: none !important; }

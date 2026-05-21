@@ -1,6 +1,7 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { T, ThemeToggle } from "../theme";
 import { BACKEND_URL } from "../constants";
+import { GitHubMark, GitHubStars } from "../components/Logo";
 import HeroBackground from "../components/HeroBackground";
 
 // ─── Page 1: Dataset Selection ───────────────────────────────────────────────
@@ -8,24 +9,54 @@ import HeroBackground from "../components/HeroBackground";
 // action. The decorative backdrop lives in <HeroBackground/>; the hero runs its
 // own --hero-* palette so the rest of the app stays untouched.
 
-// Brand sparkle mark: a single four-point twinkle, filled with a soft lilac to
-// plum gradient so it sits inside the hero palette instead of fighting it.
+// Brand sparkle mark: a four-point twinkle with a soft lilac glow behind it,
+// gently breathing and shimmering so it feels alive.
 function SparkMark() {
   return (
-    <svg width="46" height="46" viewBox="0 0 40 40" aria-hidden="true" style={{ display: "block" }}>
-      <defs>
-        <linearGradient id="sparkMark" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--hero-spark)" />
-          <stop offset="100%" stopColor="var(--hero-play-to)" />
-        </linearGradient>
-      </defs>
-      <g transform="translate(20 20)" fill="url(#sparkMark)">
-        <path d="M0 -19 C 1.7 -6.8 1.9 -3.4 0 0 C -1.9 -3.4 -1.7 -6.8 0 -19 Z" />
-        <path d="M19 0 C 6.8 1.7 3.4 1.9 0 0 C 3.4 -1.9 6.8 -1.7 19 0 Z" />
-        <path d="M0 19 C -1.7 6.8 -1.9 3.4 0 0 C 1.9 3.4 1.7 6.8 0 19 Z" />
-        <path d="M-19 0 C -6.8 -1.7 -3.4 -1.9 0 0 C -3.4 1.9 -6.8 1.7 -19 0 Z" />
-      </g>
-    </svg>
+    <div style={{
+      position: "relative",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "52px",
+      height: "52px",
+    }}>
+      <span
+        className="spark-glow"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: "124px",
+          height: "124px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, var(--hero-spark), transparent 68%)",
+          filter: "blur(7px)",
+          pointerEvents: "none",
+        }}
+      />
+      <svg
+        className="spark-shine"
+        width="50"
+        height="50"
+        viewBox="0 0 40 40"
+        aria-hidden="true"
+        style={{ display: "block", position: "relative" }}
+      >
+        <defs>
+          <linearGradient id="sparkMark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--hero-spark)" />
+            <stop offset="100%" stopColor="var(--hero-play-to)" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(20 20)" fill="url(#sparkMark)">
+          <path d="M0 -19 C 1.7 -6.8 1.9 -3.4 0 0 C -1.9 -3.4 -1.7 -6.8 0 -19 Z" />
+          <path d="M19 0 C 6.8 1.7 3.4 1.9 0 0 C 3.4 -1.9 6.8 -1.7 19 0 Z" />
+          <path d="M0 19 C -1.7 6.8 -1.9 3.4 0 0 C 1.9 3.4 1.7 6.8 0 19 Z" />
+          <path d="M-19 0 C -6.8 -1.7 -3.4 -1.9 0 0 C -3.4 1.9 -6.8 1.7 -19 0 Z" />
+          <circle r="2" fill="#FFFFFF" opacity="0.9" />
+        </g>
+      </svg>
+    </div>
   );
 }
 
@@ -41,9 +72,9 @@ function BrandLockup() {
       lineHeight: 1,
       whiteSpace: "nowrap",
     }}>
-      <span style={{ fontSize: "1.16rem", fontWeight: 800, color: "var(--hero-ink)" }}>RAG Doctor</span>
-      <span aria-hidden style={{ fontSize: "0.82rem", fontWeight: 400, color: "var(--hero-play-from)", margin: "0 0.3em" }}>/</span>
-      <span className="hero-playground" style={{ fontSize: "0.82rem", fontWeight: 700 }}>Playground</span>
+      <span style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--hero-ink)" }}>RAG Doctor</span>
+      <span aria-hidden style={{ fontSize: "1rem", fontWeight: 400, color: "var(--hero-play-from)", margin: "0 0.3em" }}>/</span>
+      <span className="hero-playground" style={{ fontSize: "1rem", fontWeight: 700 }}>Playground</span>
     </div>
   );
 }
@@ -51,6 +82,7 @@ function BrandLockup() {
 export function DatasetPage({ onDatasetReady }) {
   const [selectedDataset, setSelectedDataset] = useState("");
   const [preprocessingStatus, setPreprocessingStatus] = useState("idle");
+  const pollRef = useRef(null);
 
   // Paint the page chrome (html/body) with the hero palette so overscroll never
   // reveals the warm app background underneath. Restored on unmount.
@@ -75,15 +107,15 @@ export function DatasetPage({ onDatasetReady }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dataset_name: "FIQA Data" }),
       });
-      const poll = setInterval(async () => {
+      pollRef.current = setInterval(async () => {
         const res = await fetch(`https://${BACKEND_URL}/preprocessing-status`);
         const data = await res.json();
         if (data.status === "done" || data.status === "error") {
           setPreprocessingStatus(data.status);
-          clearInterval(poll);
+          clearInterval(pollRef.current);
         }
       }, 2000);
-    } catch (err) {
+    } catch {
       setPreprocessingStatus("error");
     }
   };
@@ -92,6 +124,9 @@ export function DatasetPage({ onDatasetReady }) {
   useEffect(() => {
     if (preprocessingStatus === "done") onDatasetReady(selectedDataset);
   }, [preprocessingStatus, selectedDataset, onDatasetReady]);
+
+  // Stop the status poll if the page unmounts mid-run.
+  useEffect(() => () => clearInterval(pollRef.current), []);
 
   // A quiet 3-step journey rail naming the whole flow.
   const journey = [
@@ -117,7 +152,8 @@ export function DatasetPage({ onDatasetReady }) {
     }}>
       <HeroBackground />
 
-      {/* Top bar: brand lockup + theme toggle. */}
+      {/* Top bar: brand lockup, then theme toggle + GitHub, mirroring the
+          page-2 header (without its dataset-status pill). */}
       <header style={{
         position: "relative",
         zIndex: 2,
@@ -128,7 +164,45 @@ export function DatasetPage({ onDatasetReady }) {
         padding: "20px 26px",
       }}>
         <BrandLockup />
-        <ThemeToggle />
+        <div className="hero-navcluster" style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          // Remap the app's warm chrome tokens to the hero palette so the
+          // shared toggle / GitHub controls match this page (pages 2-3 keep
+          // the warm theme, since their own components are untouched).
+          "--surface": "var(--hero-surface)",
+          "--surfaceMuted": "var(--hero-surface-2)",
+          "--border": "var(--hero-border)",
+          "--borderStrong": "var(--hero-border-strong)",
+          "--textMuted": "var(--hero-ink-soft)",
+          "--text": "var(--hero-ink)",
+        }}>
+          <ThemeToggle />
+          <a
+            href="https://github.com/hanhanwu/RagDoctor"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open GitHub repository"
+            aria-label="Open GitHub repository"
+            className="icon-btn"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              borderRadius: T.radius.md,
+              border: `1px solid ${T.color.border}`,
+              background: T.color.surface,
+              color: T.color.textMuted,
+              textDecoration: "none",
+            }}
+          >
+            <GitHubMark />
+          </a>
+          <GitHubStars />
+        </div>
       </header>
 
       {/* Centred hero cluster, filling the space below the top bar. */}
@@ -294,7 +368,7 @@ export function DatasetPage({ onDatasetReady }) {
             ) : (
               <button type="button" onClick={handleTryNow} style={CTA_STYLE}>
                 <span className="cta-fill" />
-                <span>{errored ? "Something went wrong — retry" : "Try it now"}</span>
+                <span>{errored ? "Something went wrong, retry" : "Try it now"}</span>
                 {!errored && (
                   <span className="nudge-on-hover" aria-hidden style={{ display: "inline-block", fontSize: "1.15rem", lineHeight: 1 }}>→</span>
                 )}
@@ -303,6 +377,26 @@ export function DatasetPage({ onDatasetReady }) {
           </div>
         </div>
       </div>
+
+      {/* Quiet author credit, tucked into the bottom-right corner. */}
+      <footer style={{
+        position: "absolute",
+        right: "clamp(16px, 2.6vw, 40px)",
+        bottom: "clamp(14px, 1.8vw, 26px)",
+        zIndex: 1,
+        fontSize: "0.82rem",
+        color: "var(--hero-ink-faint)",
+      }}>
+        by{" "}
+        <a
+          href="https://github.com/hanhanwu"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--hero-ink-soft)", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: "2px" }}
+        >
+          hanhanwu
+        </a>
+      </footer>
     </div>
   );
 }
