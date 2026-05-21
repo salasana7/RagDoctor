@@ -160,7 +160,7 @@ export function RAGSettings({ title, selectedModel, onModelChange,
           <label htmlFor={`${title}-embedding-model`} style={labelStyle}>
             Embedding Model
           </label>
-          <div style={{ ...fieldShellBase, padding: 0, overflow: "hidden" }}>
+          <div className="field-shell" style={{ ...fieldShellBase, padding: 0, overflow: "hidden" }}>
             <select
               id={`${title}-embedding-model`}
               value={selectedModel}
@@ -184,7 +184,7 @@ export function RAGSettings({ title, selectedModel, onModelChange,
         {/* Top N */}
         <div>
           <label style={{ ...labelStyle, whiteSpace: "nowrap" }}>Top N Retrieved Content</label>
-          <div style={{ ...fieldShellBase, padding: 0, overflow: "hidden", ...(sageActive || {}) }}>
+          <div className="field-shell" style={{ ...fieldShellBase, padding: 0, overflow: "hidden", ...(sageActive || {}) }}>
             <select
               value={topN}
               onChange={e => onTopNChange(Number(e.target.value))}
@@ -221,7 +221,7 @@ export function RAGSettings({ title, selectedModel, onModelChange,
         {/* Semantic Weight (mirrors slider) */}
         <div>
           <label style={{ ...labelStyle, whiteSpace: "nowrap" }}>Semantic Weight <span style={{ fontWeight: 400, color: T.color.textSubtle, fontFamily: T.font.mono, fontSize: "0.72rem" }}>(0–1)</span></label>
-          <div style={fieldShellBase}>
+          <div className="field-shell" style={fieldShellBase}>
             <input
               type="number"
               step="0.01"
@@ -342,7 +342,7 @@ export function RAGSettings({ title, selectedModel, onModelChange,
         <label htmlFor={`${title}-answer-gen-llm`} style={labelStyle}>
           Answer Generation LLM
         </label>
-        <div style={{ ...fieldShellBase, padding: 0, overflow: "hidden" }}>
+        <div className="field-shell" style={{ ...fieldShellBase, padding: 0, overflow: "hidden" }}>
           <select
             id={`${title}-answer-gen-llm`}
             value={agLLM}

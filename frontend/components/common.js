@@ -45,7 +45,7 @@ export function SuggestionItem({ text, onCheckedChange }) {
       textDecoration: checked ? "line-through" : "none",
       fontSize: "0.9rem",
       lineHeight: 1.5,
-      transition: "background 150ms",
+      transition: "background-color 150ms ease, color 150ms ease",
       background: checked ? T.color.surfaceSunk : "transparent",
     }}>
       <input

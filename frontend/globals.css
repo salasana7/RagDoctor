@@ -171,6 +171,14 @@ select, input, textarea {
 }
 select:hover, input:hover, textarea:hover { border-color: var(--borderStrong); }
 select:focus, input:focus, textarea:focus { border-color: var(--brand); }
+
+/* Field shell: wraps a borderless select/input so hover + keyboard focus land
+   on the whole field box. Without this the inner control's focus ring is
+   clipped by the shell's overflow:hidden (selects) or floats inset (inputs). */
+.field-shell:hover { border-color: var(--borderStrong); }
+.field-shell:focus-within { border-color: var(--brand); }
+.field-shell:has(:focus-visible) { box-shadow: var(--shadowFocus); }
+.field-shell select:focus-visible, .field-shell input:focus-visible { box-shadow: none; }
 select {
   appearance: none;
   -webkit-appearance: none;
