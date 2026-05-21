@@ -33,6 +33,9 @@ export function ABTestPage({ selectedDataset }) {
   // pendingSwap: set by RCA tab Submit; consumed when user clicks "Run New A/B Test"
   const [pendingSwap, setPendingSwap] = useState(null); // { controlGroup } | null
   const [hasRunNewABTest, setHasRunNewABTest] = useState(false);
+  // Which RAG config occupies the control (left) pane — flips to "RAG 2" once a
+  // swap promotes RAG 2 to the new baseline, so the settings card reflects it.
+  const [controlGroupName, setControlGroupName] = useState("RAG 1");
 
   // true whenever "Run New A/B Test" button is visible — suppresses Compare button
   const newABTestReadyRef = useRef(false);
@@ -101,6 +104,7 @@ export function ABTestPage({ selectedDataset }) {
     if (controlGroup === 'rag2') {
       const { rag2Model: m, rag2TopN: t, rag2SemanticWeight: s, rag2AGLLM: l } = rag2ValuesRef.current;
       setRag1Model(m); setRag1TopN(t); setRag1SemanticWeight(s); setRag1AGLLM(l);
+      setControlGroupName('RAG 2'); // RAG 2 is now the control — keep the label in sync
     }
     // if controlGroup === 'rag1', left pane already has the correct settings
   }, [checkedSuggestionsCount, pendingSwap]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -358,7 +362,7 @@ export function ABTestPage({ selectedDataset }) {
         {/* Left: RAG 1 Settings */}
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minWidth: 0 }}>
           <RAGSettings
-            title="Control Group: RAG 1 Settings"
+            title={`Control Group: ${controlGroupName} Settings`}
             selectedModel={rag1Model}
             onModelChange={setRag1Model}
             topN={rag1TopN}
