@@ -385,7 +385,7 @@ export function RCAResultsPage({ results, dataset }) {
       <div style={{
         position: "sticky", bottom: 0,
         background: T.color.surface, borderTop: `1px solid ${T.color.border}`,
-        boxShadow: "0 -4px 16px rgba(80,50,20,0.07)",
+        boxShadow: "0 -4px 16px rgba(86,64,150,0.10)",
       }}>
         <div style={{
           maxWidth: MAXW, margin: "0 auto", padding: "14px 24px",
@@ -402,7 +402,7 @@ export function RCAResultsPage({ results, dataset }) {
               background: T.color.brand, color: "#fff", border: "none",
               borderRadius: T.radius.md, padding: "11px 28px",
               fontSize: "0.92rem", fontWeight: 600, cursor: "pointer",
-              boxShadow: "0 8px 24px rgba(128,0,0,0.20)", letterSpacing: "0.01em",
+              boxShadow: "0 8px 24px rgba(86,64,150,0.26)", letterSpacing: "0.01em",
             }}
           >
             Submit changes
