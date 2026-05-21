@@ -168,9 +168,7 @@ export function DatasetPage({ onDatasetReady }) {
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          // Remap the app's warm chrome tokens to the hero palette so the
-          // shared toggle / GitHub controls match this page (pages 2-3 keep
-          // the warm theme, since their own components are untouched).
+          // Pin the shared toggle / GitHub controls to the hero palette.
           "--surface": "var(--hero-surface)",
           "--surfaceMuted": "var(--hero-surface-2)",
           "--border": "var(--hero-border)",
