@@ -3,6 +3,7 @@ import { T } from "../theme";
 import { BACKEND_URL, embeddingModels, answerGenLLMModels, RETRIEVAL_SCORE_DEFS, ANSWER_SCORE_DEFS } from "../constants";
 import { computeAQCI, parseSuggestions } from "../stats";
 import { Nav } from "../components/Nav";
+import { Stepper } from "../components/Stepper";
 import { RAGSettings } from "../components/RAGSettings";
 import { EvalStackedBarChart } from "../components/EvalStackedBarChart";
 import { SuggestionItem } from "../components/common";
@@ -431,6 +432,12 @@ export function ABTestPage({ selectedDataset }) {
             </div>
           ) : (
             <>
+              {/* Journey rail — only before the first comparison, so it doesn't
+                  crowd the column once results and controls fill it. */}
+              {ragStatus === "idle" && (
+                <Stepper active={2} className="enter-up" style={{ marginBottom: "24px" }} />
+              )}
+
               {((!hasRunNewABTest && ragStatus !== "done") || settingsChangedAfterRAG) && (
                 <button
                   onClick={handleRunRAGs}

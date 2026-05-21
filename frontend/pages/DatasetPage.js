@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef } from "react";
 import { T } from "../theme";
 import { BACKEND_URL } from "../constants";
 import { Nav } from "../components/Nav";
+import { Stepper } from "../components/Stepper";
 import HeroBackground from "../components/HeroBackground";
 
 // ─── Page 1: Dataset Selection ───────────────────────────────────────────────
@@ -109,13 +110,6 @@ export function DatasetPage({ onDatasetReady }) {
   // Stop the status poll if the page unmounts mid-run.
   useEffect(() => () => clearInterval(pollRef.current), []);
 
-  // A quiet 3-step journey rail naming the whole flow.
-  const journey = [
-    { n: 1, label: "Select dataset", active: true },
-    { n: 2, label: "Compare RAG setups", active: false },
-    { n: 3, label: "Trace root cause", active: false },
-  ];
-
   const busy = preprocessingStatus === "running" || preprocessingStatus === "done";
   const errored = preprocessingStatus === "error";
 
@@ -189,53 +183,7 @@ export function DatasetPage({ onDatasetReady }) {
           </p>
 
           {/* Journey rail. */}
-          <div className="enter-up" style={{
-            animationDelay: "160ms",
-            marginTop: "30px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexWrap: "nowrap",
-            gap: "8px",
-          }}>
-            {journey.map((s, i) => (
-              <Fragment key={s.n}>
-                {i > 0 && (
-                  <span style={{ width: "18px", height: "1.5px", background: "var(--hero-step-line)", flexShrink: 0 }} aria-hidden />
-                )}
-                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{
-                    width: "21px",
-                    height: "21px",
-                    borderRadius: T.radius.pill,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.68rem",
-                    fontWeight: 700,
-                    flexShrink: 0,
-                    background: s.active ? "var(--hero-accent)" : "transparent",
-                    color: s.active ? "var(--hero-accent-ink)" : "var(--hero-ink-faint)",
-                    border: s.active ? "none" : "1.5px solid var(--hero-border-strong)",
-                    boxShadow: s.active ? "0 0 15px 1px var(--hero-accent-glow)" : "none",
-                  }}>
-                    {s.n}
-                  </span>
-                  <span
-                    className={s.active ? undefined : "hero-step-rest"}
-                    style={{
-                      fontSize: "0.83rem",
-                      fontWeight: s.active ? 600 : 500,
-                      color: s.active ? "var(--hero-ink)" : "var(--hero-ink-faint)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {s.label}
-                  </span>
-                </span>
-              </Fragment>
-            ))}
-          </div>
+          <Stepper active={1} className="enter-up" style={{ animationDelay: "160ms", marginTop: "30px" }} />
 
           {/* FIQA — the one major card: a quiet info panel for context. */}
           <div className="enter-up" style={{

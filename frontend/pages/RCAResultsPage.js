@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { T, useFonts } from "../theme";
 import { BACKEND_URL, SCORE_COLORS } from "../constants";
 import { ExpandableText } from "../components/common";
+import { Stepper } from "../components/Stepper";
 
 export function RCAResultsPage({ results, dataset }) {
   useFonts();
@@ -329,6 +330,8 @@ export function RCAResultsPage({ results, dataset }) {
         flex: 1, width: "100%", maxWidth: MAXW, margin: "0 auto",
         padding: "40px 24px 48px", boxSizing: "border-box",
       }}>
+        <Stepper active={3} style={{ justifyContent: "flex-start", marginBottom: "28px" }} />
+
         <h1 style={{
           color: T.color.brandText, margin: "0 0 6px",
           fontSize: "1.7rem", fontWeight: 700, letterSpacing: "-0.02em",
