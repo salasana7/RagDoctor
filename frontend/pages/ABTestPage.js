@@ -454,7 +454,7 @@ export function ABTestPage({ selectedDataset }) {
                     letterSpacing: "0.01em",
                     position: "relative",
                     overflow: "hidden",
-                    boxShadow: "0 0 20px rgba(255, 255, 255, 0.9), 0 14px 32px rgba(255, 255, 255, 0.5)",
+                    boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
                   }}
                 >
                   <span className="cta-fill" />
@@ -790,7 +790,7 @@ export function ABTestPage({ selectedDataset }) {
                               cursor: "pointer",
                               position: "relative",
                               overflow: "hidden",
-                              boxShadow: "0 14px 32px var(--hero-cta-glow)",
+                              boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
                               display: "inline-flex",
                               alignItems: "center",
                               justifyContent: "center",

@@ -220,6 +220,11 @@ a:hover { color: var(--brandHover); }
 .balance-slider {
   -webkit-appearance: none;
   appearance: none;
+  /* Override the global `input` border/padding so the runnable track fills the
+     input's full 20px box and the thumb-centring maths below stays exact. */
+  border: none;
+  padding: 0;
+  background: transparent;
 }
 .balance-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -231,8 +236,8 @@ a:hover { color: var(--brandHover); }
   border: 2.5px solid var(--surface);
   box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk);
   cursor: grab;
-  /* centre the 23px thumb (18px + 2.5px border) on the 20px runnable track */
-  margin-top: -1.5px;
+  /* webkit renders this thumb border-box — seat it on the visible track */
+  margin-top: 2.5px;
   transition: transform 120ms var(--ease-out-quart), box-shadow 160ms var(--ease-out-quart);
 }
 .balance-slider::-webkit-slider-thumb:hover { transform: scale(1.08); }
