@@ -47,27 +47,21 @@ export function GitHubStars() {
 }
 
 // ─── Brand lockup ─────────────────────────────────────────────────────────────
-export function Logo({ size = "md" }) {
-  const fontSize = size === "lg" ? "clamp(2.4rem, 5.5vw, 3.4rem)" : "1.4rem";
+// Mirrors the Page-1 hero lockup so the wordmark is identical across the app:
+// solid "RAG Doctor", a hairline pink divider, and the gradient "Playground".
+export function Logo() {
   return (
     <div style={{
       display: "inline-flex",
       alignItems: "baseline",
       fontFamily: T.font.sans,
-      fontSize,
-      letterSpacing: "-0.025em",
+      letterSpacing: "-0.02em",
       lineHeight: 1,
       whiteSpace: "nowrap",
     }}>
-      <span style={{ color: T.color.brandText, fontWeight: 800 }}>RAG Doctor</span>
-      <span style={{
-        color: T.color.coral,
-        fontWeight: 800,
-        margin: "0 0.3em",
-        fontSize: "1.08em",
-        display: "inline-block",
-      }} aria-hidden>/</span>
-      <span style={{ color: T.color.textMuted, fontWeight: 600 }}>Playground</span>
+      <span style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--hero-ink)" }}>RAG Doctor</span>
+      <span aria-hidden style={{ fontSize: "1rem", fontWeight: 400, color: "var(--hero-play-from)", margin: "0 0.3em" }}>/</span>
+      <span className="hero-playground" style={{ fontSize: "1rem", fontWeight: 700 }}>Playground</span>
     </div>
   );
 }
