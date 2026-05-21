@@ -1,11 +1,7 @@
 :root {
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   /* ── Global palette (spring/lavender) — drives Pages 2 & 3, harmonised with the --hero-* block ── */
-  --burgundy: #875DC0;
-  --burgundyInk: #6F4BA5;
-  --burgundySoft: #EAE3F7;
   --coral: #8E5FA0;
   --coralInk: #6F4A7E;
   --coralSoft: #E6DBEE;
@@ -15,15 +11,9 @@
   --sage: #57A578;
   --sageInk: #357552;
   --sageSoft: #E2F0E7;
-  --plum: #9B7BD0;
-  --plumInk: #6B4FA0;
-  --plumSoft: #EAE3F7;
   --brand: #875DC0;
   --brandHover: #6F4BA5;
-  --brandSoft: #EAE3F7;
   --brandText: #6F4BA5;
-  --accent: #8E5FA0;
-  --accentSoft: #E6DBEE;
   --success: #357552;
   --successSoft: #E2F0E7;
   --danger: #AE3D49;
@@ -80,9 +70,6 @@
 }
 :root[data-theme="dark"] {
   /* ── Global palette (spring/lavender), dark — drives Pages 2 & 3 ── */
-  --burgundy: #9F78D4;
-  --burgundyInk: #C2A2E2;
-  --burgundySoft: #271E3B;
   --coral: #A878BE;
   --coralInk: #D7B4E4;
   --coralSoft: #2B1E36;
@@ -92,15 +79,9 @@
   --sage: #6FB98C;
   --sageInk: #98CDAC;
   --sageSoft: #1C2C22;
-  --plum: #B79AE0;
-  --plumInk: #C9B2EC;
-  --plumSoft: #271E3B;
   --brand: #875DC0;
   --brandHover: #9A72CE;
-  --brandSoft: #271E3B;
   --brandText: #C2A2E2;
-  --accent: #A878BE;
-  --accentSoft: #2B1E36;
   --success: #98CDAC;
   --successSoft: #1C2C22;
   --danger: #E58A98;
@@ -207,9 +188,8 @@ a:hover { color: var(--brandHover); }
 
 /* Press-target nudge (hover-only, fine pointer) */
 @media (hover: hover) and (pointer: fine) {
-  .nudge-on-hover, .nudge-on-hover-left { transition: transform 220ms var(--ease-out-quart); }
+  .nudge-on-hover { transition: transform 220ms var(--ease-out-quart); }
   button:hover .nudge-on-hover { transform: translateX(3px); }
-  button:hover .nudge-on-hover-left { transform: translateX(-3px); }
 }
 
 /* Icon button (rounded square) */
@@ -303,8 +283,6 @@ button:hover .cta-fill { clip-path: inset(0 0 0 0); }
   animation: badgePop 260ms var(--ease-out-quart) 240ms both;
   transform-origin: top right;
 }
-@keyframes slideInText { 0% { opacity: 0; transform: translateX(-16px); } 30%,70% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(6px); } }
-
 .enter-up { animation: fadeInUp 380ms var(--ease-out-expo) both; }
 
 /* ── Hero (homepage) decoration ── */

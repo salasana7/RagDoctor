@@ -30,10 +30,6 @@ export function ExpandableText({ text, maxTokens = 66 }) {
   );
 }
 
-export function ExpandableCell({ text, style, maxTokens = 66 }) {
-  return <td style={style}><ExpandableText text={text} maxTokens={maxTokens} /></td>;
-}
-
 export function SuggestionItem({ text, onCheckedChange }) {
   const [checked, setChecked] = useState(false);
   return (

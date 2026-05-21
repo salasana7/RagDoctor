@@ -2,7 +2,6 @@ import "./globals.css";
 import { useState, useEffect, useMemo, createContext, useContext } from "react";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-// Core 5: Burgundy · Coral · Saffron · Sage · Plum.
 // Every color is a CSS custom property so the whole app re-themes via [data-theme].
 // globals.css is the single source of truth for color values.
 export const T = {
@@ -11,9 +10,6 @@ export const T = {
     mono: `"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, "Consolas", monospace`,
   },
   color: {
-    burgundy: "var(--burgundy)",
-    burgundyInk: "var(--burgundyInk)",
-    burgundySoft: "var(--burgundySoft)",
     coral: "var(--coral)",
     coralInk: "var(--coralInk)",
     coralSoft: "var(--coralSoft)",
@@ -23,15 +19,8 @@ export const T = {
     sage: "var(--sage)",
     sageInk: "var(--sageInk)",
     sageSoft: "var(--sageSoft)",
-    plum: "var(--plum)",
-    plumInk: "var(--plumInk)",
-    plumSoft: "var(--plumSoft)",
     brand: "var(--brand)",
-    brandHover: "var(--brandHover)",
-    brandSoft: "var(--brandSoft)",
     brandText: "var(--brandText)",
-    accent: "var(--accent)",
-    accentSoft: "var(--accentSoft)",
     success: "var(--success)",
     successSoft: "var(--successSoft)",
     danger: "var(--danger)",
