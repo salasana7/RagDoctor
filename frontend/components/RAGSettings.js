@@ -107,8 +107,7 @@ export function RAGSettings({ title, selectedModel, onModelChange,
           fontWeight: 700,
           letterSpacing: "-0.01em",
         }}>
-          {/* title format: "<group>: <heading>" — heading reflects the live RAG identity */}
-          {title.split(": ")[1] ?? title}
+          {isControl ? "RAG 1 Settings" : "RAG 2 Settings"}
         </h2>
       </div>
 

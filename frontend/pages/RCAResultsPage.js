@@ -66,7 +66,6 @@ export function RCAResultsPage({ results, dataset }) {
     return merged;
   }
 
-  const [selectedQueryVariant, setSelectedQueryVariant] = useState({});
   // editState: { [rowIndex]: { context?: string, referenced_answer?: string } }
   const [editState, setEditState] = useState({});
   // draftState: in-progress edits, same shape
@@ -367,7 +366,7 @@ export function RCAResultsPage({ results, dataset }) {
               .map(s => s.display).filter(Boolean).join(" ");
             const variants = qq ? (qq.values && qq.values.length ? qq.values : (qq.display ? [qq.display] : [])) : [];
             const diagnosis = flagText
-              || (variants.length ? "This query was flagged — pick a clearer phrasing to re-run it with." : "");
+              || (variants.length ? "This query was flagged as unclear — clearer rephrasings are suggested below." : "");
 
             return (
               <article key={i} style={{
@@ -424,29 +423,21 @@ export function RCAResultsPage({ results, dataset }) {
                   {readPane(`AI answer · ${controlLabel}`, item.ai_answer)}
                 </div>
 
-                {/* query-quality rephrasings */}
+                {/* query-quality rephrasings — read-only guidance, not an input */}
                 {variants.length > 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
                     <div style={paneLabel}>Suggested rephrasings</div>
                     {variants.map((opt, oi) => (
-                      <label key={oi} style={{
-                        display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer",
-                        fontSize: "0.88rem", lineHeight: 1.5,
-                        background: selectedQueryVariant[i] === opt ? T.color.brandSoft : T.color.surfaceMuted,
-                        border: `1px solid ${selectedQueryVariant[i] === opt ? T.color.brand : T.color.border}`,
+                      <div key={oi} style={{
+                        display: "flex", gap: "9px", alignItems: "flex-start",
+                        fontSize: "0.88rem", lineHeight: 1.5, color: T.color.text,
+                        background: T.color.surfaceMuted,
+                        border: `1px solid ${T.color.border}`,
                         borderRadius: T.radius.md, padding: "9px 12px",
                       }}>
-                        <input
-                          type="radio"
-                          name={`qv-${i}`}
-                          checked={selectedQueryVariant[i] === opt}
-                          onChange={() => setSelectedQueryVariant(prev => ({
-                            ...prev, [i]: prev[i] === opt ? undefined : opt,
-                          }))}
-                          style={{ marginTop: "2px", flexShrink: 0 }}
-                        />
+                        <span aria-hidden style={{ color: T.color.textSubtle, flexShrink: 0, fontWeight: 600 }}>›</span>
                         <span>{opt}</span>
-                      </label>
+                      </div>
                     ))}
                   </div>
                 )}

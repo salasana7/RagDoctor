@@ -33,9 +33,6 @@ export function ABTestPage({ selectedDataset }) {
   // pendingSwap: set by RCA tab Submit; consumed when user clicks "Run New A/B Test"
   const [pendingSwap, setPendingSwap] = useState(null); // { controlGroup } | null
   const [hasRunNewABTest, setHasRunNewABTest] = useState(false);
-  // Which RAG config occupies the control (left) pane — flips to "RAG 2" once a
-  // swap promotes RAG 2 to the new baseline, so the settings card reflects it.
-  const [controlGroupName, setControlGroupName] = useState("RAG 1");
 
   // true whenever "Run New A/B Test" button is visible — suppresses Compare button
   const newABTestReadyRef = useRef(false);
@@ -104,7 +101,6 @@ export function ABTestPage({ selectedDataset }) {
     if (controlGroup === 'rag2') {
       const { rag2Model: m, rag2TopN: t, rag2SemanticWeight: s, rag2AGLLM: l } = rag2ValuesRef.current;
       setRag1Model(m); setRag1TopN(t); setRag1SemanticWeight(s); setRag1AGLLM(l);
-      setControlGroupName('RAG 2'); // RAG 2 is now the control — keep the label in sync
     }
     // if controlGroup === 'rag1', left pane already has the correct settings
   }, [checkedSuggestionsCount, pendingSwap]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -362,7 +358,7 @@ export function ABTestPage({ selectedDataset }) {
         {/* Left: RAG 1 Settings */}
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minWidth: 0 }}>
           <RAGSettings
-            title={`Control Group: ${controlGroupName} Settings`}
+            title="Control Group: RAG 1 Settings"
             selectedModel={rag1Model}
             onModelChange={setRag1Model}
             topN={rag1TopN}
@@ -372,7 +368,7 @@ export function ABTestPage({ selectedDataset }) {
             agLLM={rag1AGLLM}
             onAGLLMChange={setRag1AGLLM}
             highlightGreen={newABTestReady}
-            winner={winningSide === "rag1"}
+            winner={newABTestReady ? !!winningSide : winningSide === "rag1"}
           />
         </div>
 
@@ -474,6 +470,71 @@ export function ABTestPage({ selectedDataset }) {
 
               {ragStatus === "done" && (
                 <>
+                  {newABTestReady && (
+                    <div className="enter-up" style={{ width: "100%" }}>
+                      <div style={{
+                        width: "100%",
+                        padding: "16px 20px",
+                        background: T.color.sageSoft,
+                        border: `1px solid ${T.color.sage}`,
+                        borderRadius: T.radius.md,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "14px",
+                        boxSizing: "border-box",
+                      }}>
+                        <div aria-hidden style={{
+                          flexShrink: 0, width: "34px", height: "34px", borderRadius: "50%",
+                          background: T.color.sage, color: T.color.onColorLight,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: "1.05rem", fontWeight: 700,
+                        }}>★</div>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: "1rem", fontWeight: 800, color: T.color.text, letterSpacing: "-0.01em" }}>
+                            {ciResult?.rag2Better ? "RAG 2" : "RAG 1"} is the new baseline
+                          </div>
+                          <div style={{ marginTop: "2px", fontSize: "0.88rem", color: T.color.textMuted, lineHeight: 1.5 }}>
+                            Its winning settings are now loaded into Control · A. Adjust RAG 2 on the right, then run a new comparison to try to beat it.
+                          </div>
+                        </div>
+                      </div>
+                      {pendingSwap && (
+                        <div style={{
+                          display: "flex", alignItems: "center", gap: "8px",
+                          marginTop: "12px",
+                          fontSize: "0.84rem", color: T.color.success, fontWeight: 600,
+                        }}>
+                          <span aria-hidden>✓</span> Reference updates submitted
+                        </div>
+                      )}
+                      <button
+                        onClick={handleNewABTest}
+                        style={{
+                          width: "100%",
+                          marginTop: pendingSwap ? "10px" : "12px",
+                          background: "linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to))",
+                          color: "var(--hero-cta-text)",
+                          border: "none",
+                          borderRadius: "14px",
+                          padding: "13px 22px",
+                          fontSize: "0.95rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          position: "relative",
+                          overflow: "hidden",
+                          boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span className="cta-fill" />
+                        <span>Run new A/B test</span>
+                        <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1rem" }} aria-hidden>→</span>
+                      </button>
+                    </div>
+                  )}
                   <div style={{
                     marginTop: "40px",
                     width: "100%",
@@ -486,8 +547,8 @@ export function ABTestPage({ selectedDataset }) {
                     RAG Performance Comparison
                   </div>
 
-                  {/* Verdict — calm headline + the one number, above the evidence */}
-                  {verdict && !settingsChangedAfterRAG && (
+                  {/* Verdict — hidden once we've moved on to setting up a retry */}
+                  {verdict && !settingsChangedAfterRAG && !newABTestReady && (
                     <div className="enter-up" style={{
                       marginTop: "14px",
                       width: "100%",
@@ -754,55 +815,6 @@ export function ABTestPage({ selectedDataset }) {
                             </div>
                           )}
                       </div>
-                      {(checkedSuggestionsCount > 0 || pendingSwap) && (
-                        <div style={{
-                          marginTop: "20px",
-                          paddingTop: "18px",
-                          borderTop: `1px solid ${T.color.border}`,
-                        }}>
-                          {pendingSwap && (
-                            <div style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                              fontSize: "0.84rem",
-                              color: T.color.success,
-                              fontWeight: 600,
-                              marginBottom: "10px",
-                            }}>
-                              <span aria-hidden>✓</span> Reference updates submitted
-                            </div>
-                          )}
-                          <div style={{ fontSize: "0.82rem", color: T.color.textMuted, marginBottom: "10px" }}>
-                            {ciResult?.rag2Better ? "RAG 2" : "RAG 1"} becomes the new baseline for the next run.
-                          </div>
-                          <button
-                            onClick={handleNewABTest}
-                            style={{
-                              width: "100%",
-                              background: "linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to))",
-                              color: "var(--hero-cta-text)",
-                              border: "none",
-                              borderRadius: "14px",
-                              padding: "13px 22px",
-                              fontSize: "0.95rem",
-                              fontWeight: 700,
-                              cursor: "pointer",
-                              position: "relative",
-                              overflow: "hidden",
-                              boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: 8,
-                            }}
-                          >
-                            <span className="cta-fill" />
-                            <span>Run new A/B test</span>
-                            <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1rem" }} aria-hidden>→</span>
-                          </button>
-                        </div>
-                      )}
                     </div>
                   )}
                 </>
@@ -824,7 +836,7 @@ export function ABTestPage({ selectedDataset }) {
             agLLM={rag2AGLLM}
             onAGLLMChange={setRag2AGLLM}
             fingerHint={newABTestReady}
-            winner={winningSide === "rag2"}
+            winner={!newABTestReady && winningSide === "rag2"}
           />
         </div>
       </div>
