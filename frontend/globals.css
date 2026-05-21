@@ -259,6 +259,24 @@ a:hover { color: var(--brandHover); }
 .balance-slider::-webkit-slider-runnable-track { background: transparent; height: 20px; }
 .balance-slider::-moz-range-track { background: transparent; height: 20px; }
 
+/* Primary gradient CTA — the hero-styled action button. Layout (width,
+   padding, font-size, margin) is set per-instance; identity lives here. */
+.cta-button {
+  background: linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to));
+  color: var(--hero-cta-text);
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow);
+}
+.cta-button:focus-visible {
+  box-shadow: var(--shadowFocus), 0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow);
+}
+
 /* CTA wipe: clip-path reveal on hover instead of looping shimmer */
 .cta-fill {
   position: absolute;

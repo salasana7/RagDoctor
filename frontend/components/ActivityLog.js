@@ -1,4 +1,5 @@
 import { T } from "../theme";
+import { Spinner } from "./common";
 
 // ─── Live activity log ────────────────────────────────────────────────────────
 // Renders the real backend execution stages — streamed in through job-status
@@ -50,14 +51,7 @@ export function ActivityLog({ stages }) {
               justifyContent: "center",
             }}>
               {isActive ? (
-                <span style={{
-                  width: "11px",
-                  height: "11px",
-                  border: `2px solid ${T.color.border}`,
-                  borderTopColor: T.color.brand,
-                  borderRadius: "50%",
-                  animation: "spin 0.7s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
-                }} />
+                <Spinner size={11} thickness={2} head={T.color.brand} speed={0.7} />
               ) : (
                 <span style={{ color: T.color.sage, fontWeight: 700, fontSize: "0.86rem" }}>✓</span>
               )}

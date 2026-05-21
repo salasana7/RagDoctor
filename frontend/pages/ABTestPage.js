@@ -6,8 +6,28 @@ import { Nav } from "../components/Nav";
 import { Stepper } from "../components/Stepper";
 import { RAGSettings } from "../components/RAGSettings";
 import { EvalStackedBarChart } from "../components/EvalStackedBarChart";
-import { SuggestionItem } from "../components/common";
+import { SuggestionItem, Spinner } from "../components/common";
 import { ActivityLog } from "../components/ActivityLog";
+
+// Primary gradient CTA — the hero-styled action button used across the A/B
+// flow. Visual identity lives in the .cta-button class; `style` carries the
+// per-instance layout (width, padding, font-size, margin).
+function CtaButton({ onClick, label, className, style }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={"cta-button" + (className ? ` ${className}` : "")}
+      style={style}
+    >
+      <span className="cta-fill" />
+      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+        <span>{label}</span>
+        <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.05rem" }} aria-hidden>→</span>
+      </span>
+    </button>
+  );
+}
 
 // ─── Page 2: RAG A/B Test ─────────────────────────────────────────────────────
 
@@ -409,27 +429,14 @@ export function ABTestPage({ selectedDataset }) {
               alignItems: "center",
               gap: "10px",
             }}>
-              <div style={{
-                width: "14px", height: "14px",
-                border: `2px solid ${T.color.saffronSoft}`,
-                borderTopColor: T.color.warning,
-                borderRadius: "50%",
-                animation: "spin 0.8s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
-              }} />
+              <Spinner size={14} thickness={2} track={T.color.saffronSoft} head={T.color.warning} speed={0.8} />
               {queuePosition - 1 === 0
                 ? "You're next. Waiting for the current run to finish."
                 : `${queuePosition - 1} user${queuePosition - 1 === 1 ? "" : "s"} waiting ahead of you`}
             </div>
           ) : ragStatus === "running" ? (
             <div style={{ marginTop: "40px", textAlign: "center", width: "100%" }}>
-              <div style={{
-                width: "48px", height: "48px",
-                margin: "0 auto 18px",
-                border: `2px solid ${T.color.border}`,
-                borderTopColor: T.color.coral,
-                borderRadius: "50%",
-                animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
-              }} />
+              <Spinner size={48} thickness={2} style={{ margin: "0 auto 18px" }} />
               <div style={{ fontSize: "1.15rem", fontWeight: 600, color: T.color.brandText, letterSpacing: "-0.005em" }}>
                 Running RAG pipelines
                 <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0s" }}>.</span>
@@ -455,40 +462,20 @@ export function ABTestPage({ selectedDataset }) {
               )}
 
               {((!hasRunNewABTest && ragStatus !== "done") || settingsChangedAfterRAG) && (
-                <button
+                <CtaButton
                   onClick={handleRunRAGs}
                   className="enter-up"
+                  label={ragStatus === "done" && settingsChangedAfterRAG
+                    ? "Compare the new performance"
+                    : "Configure both sides, then run comparison"}
                   style={{
                     width: "100%",
                     maxWidth: "520px",
-                    background: "linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to))",
-                    color: "var(--hero-cta-text)",
-                    border: "none",
-                    borderRadius: "14px",
                     padding: "14px 24px",
                     fontSize: "0.98rem",
-                    fontWeight: 700,
-                    cursor: "pointer",
                     marginTop: "8px",
-                    letterSpacing: "0.01em",
-                    position: "relative",
-                    overflow: "hidden",
-                    boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
                   }}
-                >
-                  <span className="cta-fill" />
-                  {ragStatus === "done" && settingsChangedAfterRAG ? (
-                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
-                      <span>Compare the new performance</span>
-                      <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.05rem" }} aria-hidden>→</span>
-                    </span>
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
-                      <span>Configure both sides, then run comparison</span>
-                      <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1.05rem" }} aria-hidden>→</span>
-                    </span>
-                  )}
-                </button>
+                />
               )}
 
               {ragStatus === "done" && (
@@ -530,32 +517,16 @@ export function ABTestPage({ selectedDataset }) {
                           <span aria-hidden>✓</span> Reference updates submitted
                         </div>
                       )}
-                      <button
+                      <CtaButton
                         onClick={handleNewABTest}
+                        label="Run new A/B test"
                         style={{
                           width: "100%",
                           marginTop: pendingSwap ? "10px" : "12px",
-                          background: "linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to))",
-                          color: "var(--hero-cta-text)",
-                          border: "none",
-                          borderRadius: "14px",
                           padding: "13px 22px",
                           fontSize: "0.95rem",
-                          fontWeight: 700,
-                          cursor: "pointer",
-                          position: "relative",
-                          overflow: "hidden",
-                          boxShadow: "0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
                         }}
-                      >
-                        <span className="cta-fill" />
-                        <span>Run new A/B test</span>
-                        <span className="nudge-on-hover" style={{ display: "inline-block", fontSize: "1rem" }} aria-hidden>→</span>
-                      </button>
+                      />
                     </div>
                   )}
                   <div style={{
@@ -725,14 +696,7 @@ export function ABTestPage({ selectedDataset }) {
                   )}
                   {!settingsChangedAfterRCA && !settingsChangedAfterRAG && rcaStatus === "running" && (
                     <div style={{ marginTop: "40px", textAlign: "center", width: "100%" }}>
-                      <div style={{
-                        width: "40px", height: "40px",
-                        margin: "0 auto 14px",
-                        border: `3px solid ${T.color.border}`,
-                        borderTopColor: T.color.coral,
-                        borderRadius: "50%",
-                        animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
-                      }} />
+                      <Spinner size={40} style={{ margin: "0 auto 14px" }} />
                       <div style={{ fontSize: "1.05rem", fontWeight: 600, color: T.color.brandText }}>
                         Running root cause analysis
                         <span style={{ display: "inline-block", animation: "dotFade 1.5s ease-in-out infinite 0s" }}>.</span>

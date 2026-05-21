@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { T, useFonts } from "../theme";
 import { BACKEND_URL, SCORE_COLORS } from "../constants";
-import { ExpandableText } from "../components/common";
+import { ExpandableText, Spinner } from "../components/common";
 import { Stepper } from "../components/Stepper";
 
 export function RCAResultsPage({ results, dataset }) {
@@ -21,13 +21,7 @@ export function RCAResultsPage({ results, dataset }) {
       alignItems: "center",
       gap: "14px",
     }}>
-      <div style={{
-        width: "20px", height: "20px",
-        border: `3px solid ${T.color.border}`,
-        borderTopColor: T.color.coral,
-        borderRadius: "50%",
-        animation: "spin 0.9s linear infinite, spinnerGlow 2.4s ease-in-out infinite",
-      }} />
+      <Spinner size={20} />
       Analysis is running. This page will update automatically when done.
     </div>
   );

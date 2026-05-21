@@ -1,6 +1,25 @@
 import { useState } from "react";
 import { T } from "../theme";
 
+// Loading spinner — a rotating ring with the soft theme-tinted halo.
+// The `spin` and `spinnerGlow` keyframes live in globals.css.
+export function Spinner({ size = 40, thickness = 3, track = T.color.border, head = T.color.coral, speed = 0.9, style }) {
+  return (
+    <div
+      aria-hidden
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        border: `${thickness}px solid ${track}`,
+        borderTopColor: head,
+        borderRadius: "50%",
+        animation: `spin ${speed}s linear infinite, spinnerGlow 2.4s ease-in-out infinite`,
+        ...style,
+      }}
+    />
+  );
+}
+
 export function ExpandableText({ text, maxTokens = 66 }) {
   const [expanded, setExpanded] = useState(false);
   const tokens = (text || "").split(/\s+/).filter(Boolean);
