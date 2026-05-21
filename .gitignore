@@ -214,3 +214,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 experiments/rca_results.csv
+
+# Claude Code skill tooling state (local, not part of the app)
+skills-lock.json

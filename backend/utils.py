@@ -258,14 +258,35 @@ def run_one(cfg, selected_items, documents, db_url, dataset):
     )
 
 
-async def run_all_in_processes(cfgs, selected_items, documents, url, dataset):
+async def _await_indexed(idx, awaitable):
+    """Await `awaitable` and tag the result with its original index, so progress
+    can be reported as each task completes without losing positional order."""
+    return idx, await awaitable
+
+
+async def run_all_in_processes(cfgs, selected_items, documents, url, dataset, on_progress=None):
     loop = asyncio.get_running_loop()
     with ProcessPoolExecutor() as pool:
-        tasks = [
+        futures = [
             loop.run_in_executor(pool, run_one, cfg, selected_items, documents, url, dataset)
             for cfg in cfgs
         ]
-        config_hashes = await asyncio.gather(*tasks)
+        # Preserve positional order in config_hashes (downstream relies on
+        # index 0 == rag1, index 1 == rag2) while still reporting progress as
+        # each pipeline genuinely finishes, whichever order that happens in.
+        config_hashes = [None] * len(futures)
+        completed = 0
+        for wrapped in asyncio.as_completed(
+            [_await_indexed(i, f) for i, f in enumerate(futures)]
+        ):
+            idx, config_hash = await wrapped
+            config_hashes[idx] = config_hash
+            completed += 1
+            if on_progress:
+                on_progress(
+                    f"RAG {idx + 1} pipeline ready — retrieval index built "
+                    f"({completed}/{len(futures)})"
+                )
     return config_hashes
 
 
@@ -393,10 +414,16 @@ async def eval_one_config(config_hash, db_url, rag_df):
     
 
 
-async def run_auto_eval(config_hashes, db_url, rag_df):
+async def run_auto_eval(config_hashes, db_url, rag_df, on_progress=None):
+    async def _eval_with_progress(idx, config_hash):
+        result = await eval_one_config(config_hash, db_url, rag_df)
+        if on_progress:
+            on_progress(f"RAG {idx + 1} scored — retrieval & answer quality evaluated")
+        return result
+
     results = await asyncio.gather(*[
-        eval_one_config(config_hash, db_url, rag_df)
-        for config_hash in config_hashes
+        _eval_with_progress(idx, config_hash)
+        for idx, config_hash in enumerate(config_hashes)
     ])
 
     return {

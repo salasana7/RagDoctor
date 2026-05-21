@@ -65,6 +65,23 @@ _queue_order: list = []   # job_ids waiting, in order
 _rca_results: dict = {}   # rca_job_id -> result dict
 _job_to_rca: dict = {}    # job_id -> rca_job_id, prevents duplicate RCA tasks
 
+
+def _record_stage(store: dict, key: str, message: str) -> None:
+    """Append a real execution-stage event to a job's in-memory progress log.
+
+    Stages are surfaced verbatim by the status endpoints and rendered as a live
+    activity log on the frontend. Every message must come from a genuine code
+    path reaching this point — never a timer. No-op if the entry is already gone
+    (e.g. cleaned up before the task finished)."""
+    entry = store.get(key)
+    if entry is None:
+        return
+    entry.setdefault("stages", []).append({
+        "t": round(time.time(), 3),
+        "message": message,
+    })
+    print(f"[stage] {key[:8]} | {message}")
+
 DATABASE_URL = os.getenv("DATABASE_URL_PRIVATE")
 DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://")
 db_url = make_url(DATABASE_URL)
@@ -295,15 +312,24 @@ async def process_job_queue():
         job_id, request, snapshot = await _job_queue.get()
         if job_id in _queue_order:
             _queue_order.remove(job_id)
-        _job_results[job_id] = {"status": "running"}
+        _job_results[job_id] = {"status": "running", "stages": []}
+
+        def stage(message):
+            _record_stage(_job_results, job_id, message)
+
         try:
+            stage(f"Run started — {len(snapshot['rag_lst'])} dataset records loaded")
             cfgs = [request.rag1, request.rag2]
+            stage("Building 2 RAG pipelines — embedding queries & hybrid retrieval")
             config_hashes = await run_all_in_processes(
-                cfgs, snapshot['rag_lst'], snapshot['documents'], db_url, request.dataset
+                cfgs, snapshot['rag_lst'], snapshot['documents'], db_url, request.dataset,
+                on_progress=stage,
             )
+            stage("Scoring retrieval & answer quality with the eval LLM")
             eval_results = await run_auto_eval(
-                config_hashes, db_url, snapshot['rag_df']
+                config_hashes, db_url, snapshot['rag_df'], on_progress=stage,
             )
+            stage("Aggregating scores — computing the comparison verdict")
             _job_results[job_id] = {
                 "status": "done",
                 "completed_at": time.time(),
@@ -357,7 +383,11 @@ async def get_job_status(job_id: str):
 
 
 async def _run_rca_task(rca_job_id: str, job_id: str):
+    def stage(message):
+        _record_stage(_rca_results, rca_job_id, message)
+
     try:
+        stage("Loading evaluation records for both configurations")
         job = _job_results[job_id]
         records_1 = job["eval_records_1"]
         records_2 = job["eval_records_2"]
@@ -371,6 +401,8 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
         unique_hashes = list(dict.fromkeys(config_hashes))  # deduplicated, order preserved
         cached = await asyncio.to_thread(_db_fetch_cached_rca, unique_hashes)
         print(f"RCA cache hit for: {list(cached.keys())}")
+        stage(f"Cache check complete — {len(cached)}/{len(unique_hashes)} "
+              f"configuration(s) already analyzed")
 
         hash_1_cached = config_hashes[0] in cached
         # If same_config, config 2 is always satisfied once config 1 is resolved
@@ -380,6 +412,7 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
         to_save = []
 
         if not hash_1_cached and not hash_2_cached:
+            stage("Running root-cause analysis on both RAG configurations")
             # Both missing — run concurrently to preserve original performance
             rca_raw = await asyncio.gather(
                 asyncio.gather(*[run_rca(r) for r in records_1]),
@@ -392,6 +425,8 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
             ]
         else:
             # At least one config is cached — handle individually
+            if not hash_1_cached or (not same_config and not hash_2_cached):
+                stage("Running root-cause analysis on the remaining configuration")
             if hash_1_cached:
                 rca_1 = cached[config_hashes[0]]["rca_records"]
             else:
@@ -416,6 +451,8 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
         rca_summary_patterns = None
         if not same_config:
             rag2_better = _is_rag2_better(rca_1, rca_2)
+            stage(f"RAG 2 {'outperformed' if rag2_better else 'did not beat'} RAG 1 "
+                  f"— tracing what drove the outcome")
             cached_compare = await asyncio.to_thread(
                 _db_fetch_cached_compare, config_hashes[0], config_hashes[1]
             )
@@ -430,6 +467,7 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
                     else:
                         raw_compare_records = build_compare_df(rca_1, rca_2, rag1_config, rag2_config)
                         if len(raw_compare_records) > 0:
+                            stage("Comparing per-record outcomes between RAG 1 and RAG 2")
                             compare_df = await run_compare_2rags(raw_compare_records, rca_llm)
                             await asyncio.to_thread(
                                 _db_save_compare, config_hashes[0], config_hashes[1],
@@ -439,6 +477,7 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
                         else:
                             compare_df = pd.DataFrame()
                     if not compare_df.empty:
+                        stage("Summarizing the configuration changes behind the win")
                         compare_patterns = await run_summarize_patterns(
                             compare_df, rca_llm,
                             text_col='lessons_learned',
@@ -459,6 +498,8 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
                         asyncio.to_thread(_db_fetch_cached_why_lower_score, config_hashes[0]),
                         asyncio.to_thread(_db_fetch_cached_why_lower_score, config_hashes[1]),
                     )
+                    if wls_cached_1 is None or wls_cached_2 is None:
+                        stage("Analyzing why answers fell short of the top score")
                     wls_to_save = []
                     if wls_cached_1 is not None:
                         df1_out = pd.DataFrame(wls_cached_1)
@@ -485,6 +526,7 @@ async def _run_rca_task(rca_job_id: str, job_id: str):
                     combined_insights_df = pd.concat(
                         [df1_out[['insights']], df2_out[['insights']]], ignore_index=True
                     )
+                    stage("Summarizing root-cause patterns across both configs")
                     rca_summary_patterns = await run_summarize_patterns(
                         combined_insights_df, rca_llm,
                         text_col='insights',
@@ -527,7 +569,7 @@ async def run_rca_endpoint(job_id: str, background_tasks: BackgroundTasks):
          return {"status": existing_status, "rca_job_id": existing_rca_job_id}
     rca_job_id = str(uuid.uuid4())
     _job_to_rca[job_id] = rca_job_id
-    _rca_results[rca_job_id] = {"status": "running"}
+    _rca_results[rca_job_id] = {"status": "running", "stages": []}
     background_tasks.add_task(_run_rca_task, rca_job_id, job_id)
     return {"status": "running", "rca_job_id": rca_job_id}
 

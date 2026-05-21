@@ -1,0 +1,367 @@
+:root {
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* ── Global palette (spring/lavender) — drives Pages 2 & 3, harmonised with the --hero-* block ── */
+  --coral: #8E5FA0;
+  --coralInk: #6F4A7E;
+  --coralSoft: #E6DBEE;
+  --saffron: #E0A33C;
+  --saffronInk: #8A5E1A;
+  --saffronSoft: #F7EBD6;
+  --sage: #57A578;
+  --sageInk: #357552;
+  --sageSoft: #E2F0E7;
+  --brand: #875DC0;
+  --brandHover: #6F4BA5;
+  --brandText: #6F4BA5;
+  --success: #357552;
+  --successSoft: #E2F0E7;
+  --danger: #AE3D49;
+  --warning: #8A5E1A;
+  --warningSoft: #F7EBD6;
+  --bg: #F7F4EC;
+  --surface: #FCFBFE;
+  --surfaceMuted: #EEEAF8;
+  --surfaceSunk: #E4DDF3;
+  --border: #E5E1F0;
+  --borderStrong: #D6D0E7;
+  --text: #221E38;
+  --textMuted: #565070;
+  --textSubtle: #6F6C84;
+  --scoreNeg1: #6E62B8;
+  --score0: #A8455F;
+  --score1: #D06A52;
+  --score2: #E5AC4E;
+  --score3: #76BC8F;
+  --onColorLight: #FBFAFE;
+  --onColorDark: #221E38;
+  --shadowSm: 0 1px 2px rgba(86, 64, 150, 0.07);
+  --shadowMd: 0 4px 14px rgba(86, 64, 150, 0.10);
+  --shadowLg: 0 16px 40px rgba(86, 64, 150, 0.14);
+  --shadowFocus: 0 0 0 3px rgba(135, 93, 192, 0.32);
+  --shadowUp: 0 -4px 16px rgba(86, 64, 150, 0.10);
+  --spinner-glow: rgba(135, 93, 192, 0.34);
+  /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
+  --hero-bg: #F7F4EC;
+  --hero-bg-lift: #FDFCF7;
+  --hero-ink: #221E38;
+  --hero-ink-soft: #565070;
+  --hero-ink-faint: #6F6C84;
+  --hero-surface: #FCFBFE;
+  --hero-surface-2: #EEEAF8;
+  --hero-border: #E5E1F0;
+  --hero-border-strong: #D6D0E7;
+  --hero-card-shadow: 0 14px 38px rgba(86, 64, 150, 0.13);
+  --hero-accent: #875DC0;
+  --hero-accent-ink: #FBFAFE;
+  --hero-link: #7E51B8;
+  --hero-accent-glow: rgba(135, 93, 192, 0.5);
+  --hero-grid: rgba(64, 52, 104, 0.06);
+  --hero-grain: 0.34;
+  --hero-petal-a: #F2C4D2;
+  --hero-petal-b: #E3C6E7;
+  --hero-spark: #B6A1DD;
+  --hero-step-line: #DAD4EA;
+  --hero-cta-from: #F7C9D2;
+  --hero-cta-to: #CFC4F0;
+  --hero-cta-text: #3A2E50;
+  --hero-cta-glow: rgba(162, 132, 206, 0.40);
+  --hero-play-from: #E587AE;
+  --hero-play-to: #9466C8;
+}
+:root[data-theme="dark"] {
+  /* ── Global palette (spring/lavender), dark — drives Pages 2 & 3 ── */
+  --coral: #A878BE;
+  --coralInk: #D7B4E4;
+  --coralSoft: #2B1E36;
+  --saffron: #E3AC4F;
+  --saffronInk: #E8BE73;
+  --saffronSoft: #2E2415;
+  --sage: #6FB98C;
+  --sageInk: #98CDAC;
+  --sageSoft: #1C2C22;
+  --brand: #875DC0;
+  --brandHover: #9A72CE;
+  --brandText: #C2A2E2;
+  --success: #98CDAC;
+  --successSoft: #1C2C22;
+  --danger: #E58A98;
+  --warning: #E8BE73;
+  --warningSoft: #2E2415;
+  --bg: #100C1A;
+  --surface: #1F1830;
+  --surfaceMuted: #181226;
+  --surfaceSunk: #0E0A18;
+  --border: #322A45;
+  --borderStrong: #473C60;
+  --text: #ECE6DF;
+  --textMuted: #A39DAC;
+  --textSubtle: #807A8E;
+  --scoreNeg1: #A98FD8;
+  --score0: #D06A7E;
+  --score1: #E08A6A;
+  --score2: #E8B65E;
+  --score3: #84C49A;
+  --onColorLight: #FBFAFE;
+  --onColorDark: #221E38;
+  --shadowSm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadowMd: 0 6px 18px rgba(0, 0, 0, 0.50);
+  --shadowLg: 0 18px 46px rgba(0, 0, 0, 0.62);
+  --shadowFocus: 0 0 0 3px rgba(151, 114, 206, 0.42);
+  --shadowUp: 0 -6px 18px rgba(0, 0, 0, 0.50);
+  --spinner-glow: rgba(170, 132, 226, 0.42);
+  /* ── Hero (soft spring mood) — scoped to the homepage hero ── */
+  --hero-bg: #100C1A;
+  --hero-bg-lift: #1C1630;
+  --hero-ink: #ECE6DF;
+  --hero-ink-soft: #A39DAC;
+  --hero-ink-faint: #807A8E;
+  --hero-surface: #191325;
+  --hero-surface-2: #251E38;
+  --hero-border: #322A45;
+  --hero-border-strong: #473C60;
+  --hero-card-shadow: 0 16px 42px rgba(0, 0, 0, 0.55);
+  --hero-accent: #875DC0;
+  --hero-accent-ink: #FBFAFE;
+  --hero-link: #C2A2E2;
+  --hero-accent-glow: rgba(150, 112, 208, 0.62);
+  --hero-grid: rgba(202, 190, 232, 0.055);
+  --hero-grain: 0.5;
+  --hero-petal-a: #C97C9C;
+  --hero-petal-b: #9D85C9;
+  --hero-spark: #CBB8EE;
+  --hero-step-line: #3A3150;
+  --hero-cta-from: #E882B0;
+  --hero-cta-to: #A079D6;
+  --hero-cta-text: #2C2030;
+  --hero-cta-glow: rgba(190, 96, 120, 0.48);
+  --hero-play-from: #F2A0C0;
+  --hero-play-to: #B58DE0;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { background: var(--bg); }
+html, body, #root { overflow-x: hidden; max-width: 100%; }
+html { color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+button {
+  font-family: inherit;
+  transition: transform 140ms var(--ease-out-quart), background-color 180ms var(--ease-out-quart), border-color 180ms var(--ease-out-quart), box-shadow 180ms var(--ease-out-quart), filter 180ms var(--ease-out-quart);
+  will-change: transform;
+}
+button:not(:disabled):hover { filter: brightness(0.97); }
+button:not(:disabled):active { transform: scale(0.97); transition-duration: 80ms; }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: none;
+  box-shadow: var(--shadowFocus);
+}
+select, input, textarea {
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: border-color 150ms var(--ease-out-quart), box-shadow 150ms var(--ease-out-quart);
+}
+select:hover, input:hover, textarea:hover { border-color: var(--borderStrong); }
+select:focus, input:focus, textarea:focus { border-color: var(--brand); }
+
+/* Field shell: wraps a borderless select/input so hover + keyboard focus land
+   on the whole field box. Without this the inner control's focus ring is
+   clipped by the shell's overflow:hidden (selects) or floats inset (inputs). */
+.field-shell:hover { border-color: var(--borderStrong); }
+.field-shell:focus-within { border-color: var(--brand); }
+.field-shell:has(:focus-visible) { box-shadow: var(--shadowFocus); }
+.field-shell select:focus-visible, .field-shell input:focus-visible { box-shadow: none; }
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%238B8598' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  padding-right: 32px !important;
+  cursor: pointer;
+}
+a { color: var(--brand); text-underline-offset: 2px; transition: color 150ms var(--ease-out-quart); }
+a:hover { color: var(--brandHover); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--borderStrong); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--textSubtle); border: 2px solid transparent; background-clip: padding-box; }
+
+/* Press-target nudge (hover-only, fine pointer) */
+@media (hover: hover) and (pointer: fine) {
+  .nudge-on-hover, .nudge-on-hover-left { transition: transform 220ms var(--ease-out-quart); }
+  button:hover .nudge-on-hover { transform: translateX(3px); }
+  button:hover .nudge-on-hover-left { transform: translateX(-3px); }
+}
+
+/* Icon button (rounded square) */
+.icon-btn {
+  transition: background-color 160ms var(--ease-out-quart), border-color 160ms var(--ease-out-quart), color 160ms var(--ease-out-quart), transform 140ms var(--ease-out-quart);
+}
+.icon-btn:hover { background: var(--surfaceMuted); border-color: var(--borderStrong); color: var(--text); }
+.icon-btn:active { transform: scale(0.94); }
+
+/* Nav controls: highlight the box on hover — shared across every page.
+   !important overrides the per-button inline background/border set in
+   theme.js / Logo.js (same pattern as the .app-navcluster sizing rules). */
+.app-navcluster .icon-btn:hover {
+  background: rgba(135, 93, 192, 0.12) !important;
+  border-color: var(--hero-accent) !important;
+}
+
+/* Balance slider thumb */
+.balance-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  /* Override the global `input` border/padding so the runnable track fills the
+     input's full 20px box and the thumb-centring maths below stays exact. */
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+.balance-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--coral);
+  border: 2.5px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk);
+  cursor: grab;
+  /* webkit renders this thumb border-box — seat it on the visible track */
+  margin-top: 2.5px;
+  transition: transform 120ms var(--ease-out-quart), box-shadow 160ms var(--ease-out-quart);
+}
+.balance-slider::-webkit-slider-thumb:hover { transform: scale(1.08); }
+.balance-slider:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.12); box-shadow: 0 2px 6px rgba(86, 64, 150, 0.22), 0 0 0 1px var(--coralInk), 0 0 0 6px var(--coralSoft); }
+.balance-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--coral);
+  border: 2.5px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk);
+  cursor: grab;
+  /* Firefox centres the thumb on the track itself — no margin offset needed */
+  margin-top: 0;
+}
+.balance-slider:focus { outline: none; }
+.balance-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk), 0 0 0 4px var(--coralSoft); }
+.balance-slider::-webkit-slider-runnable-track { background: transparent; height: 20px; }
+.balance-slider::-moz-range-track { background: transparent; height: 20px; }
+
+/* Primary gradient CTA — the hero-styled action button. Layout (width,
+   padding, font-size, margin) is set per-instance; identity lives here. */
+.cta-button {
+  background: linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to));
+  color: var(--hero-cta-text);
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow);
+}
+.cta-button:focus-visible {
+  box-shadow: var(--shadowFocus), 0 0 12px rgba(255, 255, 255, 0.42), 0 14px 32px var(--hero-cta-glow);
+}
+
+/* CTA wipe: clip-path reveal on hover instead of looping shimmer */
+.cta-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 320ms var(--ease-out-quart);
+  pointer-events: none;
+}
+button:hover .cta-fill { clip-path: inset(0 0 0 0); }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+/* Soft theme-tinted halo that breathes around loading spinners — paired with
+   `spin` as a second animation so the rotation and the glow stay independent. */
+@keyframes spinnerGlow {
+  0%, 100% { box-shadow: 0 0 5px 0 var(--spinner-glow); }
+  50%      { box-shadow: 0 0 14px 2px var(--spinner-glow); }
+}
+@keyframes dotFade { 0%, 100% { opacity: 0.25; } 30%, 70% { opacity: 1; } }
+@keyframes fingerBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.96); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes segGrowUp { 0% { opacity: 0; transform: scaleY(0); transform-origin: center bottom; } 100% { opacity: 1; transform: scaleY(1); transform-origin: center bottom; } }
+
+/* Winning-column badge */
+@keyframes badgePop {
+  0%   { opacity: 0; transform: scale(0.6); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.winner-badge {
+  animation: badgePop 260ms var(--ease-out-quart) 240ms both;
+  transform-origin: top right;
+}
+.enter-up { animation: fadeInUp 380ms var(--ease-out-expo) both; }
+
+/* ── Hero (homepage) decoration ── */
+/* The decorative backdrop eases in on its own opacity track so it settles just
+   as the foreground `.enter-up` cluster begins to rise — the world fades in,
+   then the content lifts into it. Opacity-only, so it never fights the petals'
+   and sparkles' infinite transform loops. */
+.hero-bg-enter { animation: fadeIn 620ms var(--ease-out-quart) both; }
+.hero-playground {
+  color: var(--hero-play-to);
+  background: linear-gradient(96deg, var(--hero-play-from), var(--hero-play-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes heroPetalFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--p-rot, 0deg)); }
+  33% { transform: translate3d(var(--p-dx, 0px), var(--p-dy, 0px), 0) rotate(calc(var(--p-rot, 0deg) + var(--p-spin, 0deg))); }
+  66% { transform: translate3d(calc(var(--p-dx, 0px) * -0.65), calc(var(--p-dy, 0px) * 0.45), 0) rotate(calc(var(--p-rot, 0deg) - var(--p-spin, 0deg))); }
+}
+@keyframes heroTwinkle {
+  0%, 100% { opacity: var(--tw-lo, 0.5); transform: scale(0.78) rotate(0deg); }
+  50% { opacity: var(--tw-hi, 1); transform: scale(1.12) rotate(42deg); }
+}
+.hero-petal { animation: heroPetalFloat var(--p-dur, 14s) ease-in-out infinite; will-change: transform; }
+.hero-spark { animation: heroTwinkle var(--tw-dur, 6s) ease-in-out infinite; will-change: opacity, transform; }
+@keyframes sparkGlow {
+  0%, 100% { opacity: 0.38; transform: scale(0.88); }
+  50% { opacity: 0.82; transform: scale(1.12); }
+}
+@keyframes sparkShine {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.07) rotate(9deg); }
+}
+.spark-glow { animation: sparkGlow 3.6s ease-in-out infinite; will-change: opacity, transform; }
+.spark-shine { animation: sparkShine 3.6s ease-in-out infinite; transform-origin: center; will-change: transform; }
+/* App nav: 44px touch targets without resizing the shared icon controls. */
+.app-navcluster .icon-btn { height: 44px !important; }
+.app-navcluster button.icon-btn { width: 44px !important; }
+@media (max-width: 640px) {
+  .hero-petal--hide-sm, .hero-spark--hide-sm { display: none !important; }
+  .hero-step-rest, .hero-sub-br { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  button:not(:disabled):active { transform: none !important; }
+  .nudge-on-hover, .nudge-on-hover-left { transition: none !important; transform: none !important; }
+  .cta-fill { display: none; }
+}
