@@ -480,7 +480,7 @@ export function ABTestPage({ selectedDataset }) {
                   dualArrows
                   label={ragStatus === "done" && settingsChangedAfterRAG
                     ? "Compare the new performance"
-                    : "Configure both sides, then run comparison"}
+                    : "Select RAG Settings and Run Comparison"}
                   style={{
                     width: "100%",
                     maxWidth: "520px",
