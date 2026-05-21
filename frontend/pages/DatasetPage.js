@@ -231,7 +231,7 @@ export function DatasetPage({ onDatasetReady }) {
           {/* The single primary action. One click → preprocess → A/B test. */}
           <div className="enter-up" style={{ animationDelay: "260ms", marginTop: "26px" }}>
             {busy ? (
-              <button type="button" disabled style={CTA_BUSY_STYLE}>
+              <button type="button" className="cta-button" disabled style={CTA_BUSY_STYLE}>
                 <div style={{
                   width: "16px",
                   height: "16px",
@@ -244,7 +244,7 @@ export function DatasetPage({ onDatasetReady }) {
                 <span>Preprocessing the dataset…</span>
               </button>
             ) : (
-              <button type="button" onClick={handleTryNow} style={CTA_STYLE}>
+              <button type="button" className="cta-button" onClick={handleTryNow} style={CTA_STYLE}>
                 <span className="cta-fill" />
                 <span>{errored ? "Something went wrong, retry" : "Try it now"}</span>
                 {!errored && (
@@ -279,19 +279,11 @@ export function DatasetPage({ onDatasetReady }) {
   );
 }
 
+// Per-instance layout only — visual identity (gradient, radius, weight, glow,
+// focus ring) lives in the shared `.cta-button` class in globals.css.
 const CTA_STYLE = {
-  position: "relative",
-  overflow: "hidden",
-  background: "linear-gradient(135deg, var(--hero-cta-from), var(--hero-cta-to))",
-  color: "var(--hero-cta-text)",
-  border: "none",
-  borderRadius: "14px",
   padding: "17px 38px",
   fontSize: "1.05rem",
-  fontWeight: 700,
-  letterSpacing: "0.01em",
-  cursor: "pointer",
-  boxShadow: "0 14px 32px var(--hero-cta-glow)",
   display: "inline-flex",
   alignItems: "center",
   gap: "11px",
