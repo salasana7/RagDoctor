@@ -6,9 +6,9 @@
   --burgundy: #875DC0;
   --burgundyInk: #6F4BA5;
   --burgundySoft: #EAE3F7;
-  --coral: #D96BA0;
-  --coralInk: #A8457A;
-  --coralSoft: #F8E4EF;
+  --coral: #8E5FA0;
+  --coralInk: #6F4A7E;
+  --coralSoft: #E6DBEE;
   --saffron: #E0A33C;
   --saffronInk: #8A5E1A;
   --saffronSoft: #F7EBD6;
@@ -22,8 +22,8 @@
   --brandHover: #6F4BA5;
   --brandSoft: #EAE3F7;
   --brandText: #6F4BA5;
-  --accent: #D96BA0;
-  --accentSoft: #F8E4EF;
+  --accent: #8E5FA0;
+  --accentSoft: #E6DBEE;
   --success: #357552;
   --successSoft: #E2F0E7;
   --danger: #AE3D49;
@@ -82,9 +82,9 @@
   --burgundy: #9F78D4;
   --burgundyInk: #C2A2E2;
   --burgundySoft: #271E3B;
-  --coral: #DD83AE;
-  --coralInk: #EBA9CB;
-  --coralSoft: #2E1C28;
+  --coral: #A878BE;
+  --coralInk: #D7B4E4;
+  --coralSoft: #2B1E36;
   --saffron: #E3AC4F;
   --saffronInk: #E8BE73;
   --saffronSoft: #2E2415;
@@ -98,8 +98,8 @@
   --brandHover: #9A72CE;
   --brandSoft: #271E3B;
   --brandText: #C2A2E2;
-  --accent: #DD83AE;
-  --accentSoft: #2E1C28;
+  --accent: #A878BE;
+  --accentSoft: #2B1E36;
   --success: #98CDAC;
   --successSoft: #1C2C22;
   --danger: #E58A98;
@@ -231,7 +231,8 @@ a:hover { color: var(--brandHover); }
   border: 2.5px solid var(--surface);
   box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk);
   cursor: grab;
-  margin-top: 0;
+  /* centre the 23px thumb (18px + 2.5px border) on the 20px runnable track */
+  margin-top: -1.5px;
   transition: transform 120ms var(--ease-out-quart), box-shadow 160ms var(--ease-out-quart);
 }
 .balance-slider::-webkit-slider-thumb:hover { transform: scale(1.08); }
@@ -244,6 +245,8 @@ a:hover { color: var(--brandHover); }
   border: 2.5px solid var(--surface);
   box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk);
   cursor: grab;
+  /* Firefox centres the thumb on the track itself — no margin offset needed */
+  margin-top: 0;
 }
 .balance-slider:focus { outline: none; }
 .balance-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 1px 3px rgba(86, 64, 150, 0.18), 0 0 0 1px var(--coralInk), 0 0 0 4px var(--coralSoft); }
