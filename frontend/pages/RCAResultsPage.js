@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { T, useFonts } from "../theme";
 import { BACKEND_URL, SCORE_COLORS } from "../constants";
 import { ExpandableText } from "../components/common";
@@ -71,7 +71,7 @@ export function RCAResultsPage({ results, dataset }) {
   const [editState, setEditState] = useState({});
   // draftState: in-progress edits, same shape
   const [draftState, setDraftState] = useState({});
-  // which field is open for editing: { i, field } | null
+  // which field is open for editing in the modal: { i, field, label } | null
   const [editingCell, setEditingCell] = useState(null);
 
   function getDisplayValue(i, field, item) {
@@ -80,12 +80,12 @@ export function RCAResultsPage({ results, dataset }) {
     return item.referenced_answer ?? item.expected_answer ?? "";
   }
 
-  function openEdit(i, field, item) {
+  function openEdit(i, field, item, label) {
     setDraftState(prev => ({
       ...prev,
       [i]: { ...prev[i], [field]: getDisplayValue(i, field, item) },
     }));
-    setEditingCell({ i, field });
+    setEditingCell({ i, field, label });
   }
 
   function confirmEdit(i, field) {
@@ -98,6 +98,18 @@ export function RCAResultsPage({ results, dataset }) {
     }
     setEditingCell(null);
   }
+
+  function closeEdit() {
+    setEditingCell(null);
+  }
+
+  // Close the edit modal on Escape.
+  useEffect(() => {
+    if (!editingCell) return;
+    const onKey = (e) => { if (e.key === "Escape") setEditingCell(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editingCell]);
 
   function handleSubmit() {
     const edits = Object.entries(editState)
@@ -160,7 +172,6 @@ export function RCAResultsPage({ results, dataset }) {
   );
 
   const editablePane = (i, field, item, label) => {
-    const isEditing = editingCell?.i === i && editingCell?.field === field;
     const isEdited = editState[i]?.[field] !== undefined;
     return (
       <div style={paneBox(true)}>
@@ -175,22 +186,94 @@ export function RCAResultsPage({ results, dataset }) {
               Edited
             </span>
           )}
-          {!isEditing && (
+          <button
+            onClick={() => openEdit(i, field, item, label)}
+            style={{
+              marginLeft: "auto", fontSize: "0.72rem", fontWeight: 600,
+              padding: "3px 12px", borderRadius: T.radius.sm, cursor: "pointer",
+              background: T.color.surface, border: `1px solid ${T.color.borderStrong}`,
+              color: T.color.textMuted, flexShrink: 0,
+            }}
+          >
+            Edit
+          </button>
+        </div>
+        <div style={paneBody}><ExpandableText text={getDisplayValue(i, field, item)} /></div>
+      </div>
+    );
+  };
+
+  // Centred edit dialog — long references get real room, away from the cramped
+  // card column. Kept as a plain function so the textarea keeps focus while typing.
+  const editModal = () => {
+    if (!editingCell) return null;
+    const { i, field, label } = editingCell;
+    const query = controlItems[i]?.query || "";
+    return (
+      <div
+        onMouseDown={(e) => { if (e.target === e.currentTarget) closeEdit(); }}
+        style={{
+          position: "fixed", inset: 0, zIndex: 100,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "24px", boxSizing: "border-box",
+          background: "rgba(17, 13, 28, 0.55)",
+          backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
+          animation: "fadeIn 140ms var(--ease-out-quart) both",
+        }}
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Edit ${label.toLowerCase()}`}
+          style={{
+            width: "100%", maxWidth: "640px", maxHeight: "calc(100vh - 48px)",
+            display: "flex", flexDirection: "column", boxSizing: "border-box",
+            background: T.color.surface,
+            border: `1px solid ${T.color.border}`,
+            borderRadius: T.radius.lg,
+            boxShadow: T.shadow.lg,
+            animation: "fadeInScale 180ms var(--ease-out-expo) both",
+          }}
+        >
+          {/* header */}
+          <div style={{
+            display: "flex", alignItems: "flex-start", gap: "14px",
+            padding: "20px 22px 16px", borderBottom: `1px solid ${T.color.border}`,
+          }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h3 style={{
+                margin: 0, fontSize: "1.05rem", fontWeight: 700,
+                color: T.color.text, letterSpacing: "-0.01em",
+              }}>
+                Edit {label.toLowerCase()}
+              </h3>
+              {query && (
+                <p style={{
+                  margin: "5px 0 0", fontSize: "0.84rem", lineHeight: 1.45,
+                  color: T.color.textMuted,
+                }}>
+                  {query}
+                </p>
+              )}
+            </div>
             <button
-              onClick={() => openEdit(i, field, item)}
+              onClick={closeEdit}
+              aria-label="Close"
+              className="icon-btn"
               style={{
-                marginLeft: "auto", fontSize: "0.72rem", fontWeight: 600,
-                padding: "3px 12px", borderRadius: T.radius.sm, cursor: "pointer",
-                background: T.color.surface, border: `1px solid ${T.color.borderStrong}`,
-                color: T.color.textMuted, flexShrink: 0,
+                flexShrink: 0, display: "inline-flex", alignItems: "center",
+                justifyContent: "center", width: "30px", height: "30px",
+                borderRadius: T.radius.sm, cursor: "pointer", padding: 0,
+                background: T.color.surface, border: `1px solid ${T.color.border}`,
+                color: T.color.textMuted, fontSize: "0.95rem", lineHeight: 1,
               }}
             >
-              Edit
+              ✕
             </button>
-          )}
-        </div>
-        {isEditing ? (
-          <div>
+          </div>
+
+          {/* body */}
+          <div style={{ padding: "18px 22px", overflowY: "auto" }}>
             <textarea
               value={draftState[i]?.[field] ?? ""}
               onChange={(e) => setDraftState(prev => ({
@@ -198,25 +281,41 @@ export function RCAResultsPage({ results, dataset }) {
               }))}
               autoFocus
               style={{
-                width: "100%", minHeight: "120px", boxSizing: "border-box",
-                fontSize: "0.86rem", lineHeight: 1.5, padding: "9px 11px",
-                resize: "vertical", borderRadius: T.radius.sm,
+                width: "100%", minHeight: "300px", boxSizing: "border-box",
+                fontSize: "0.9rem", lineHeight: 1.6, padding: "12px 14px",
+                resize: "vertical", borderRadius: T.radius.md,
               }}
             />
+          </div>
+
+          {/* footer */}
+          <div style={{
+            display: "flex", justifyContent: "flex-end", gap: "10px",
+            padding: "14px 22px", borderTop: `1px solid ${T.color.border}`,
+          }}>
+            <button
+              onClick={closeEdit}
+              style={{
+                fontSize: "0.86rem", fontWeight: 600, cursor: "pointer",
+                padding: "9px 18px", borderRadius: T.radius.md,
+                background: T.color.surface, border: `1px solid ${T.color.borderStrong}`,
+                color: T.color.textMuted,
+              }}
+            >
+              Cancel
+            </button>
             <button
               onClick={() => confirmEdit(i, field)}
               style={{
-                marginTop: "8px", fontSize: "0.78rem", fontWeight: 600,
-                padding: "6px 16px", borderRadius: T.radius.sm, cursor: "pointer",
+                fontSize: "0.86rem", fontWeight: 600, cursor: "pointer",
+                padding: "9px 20px", borderRadius: T.radius.md,
                 background: T.color.brand, color: "#fff", border: "none",
               }}
             >
               Confirm
             </button>
           </div>
-        ) : (
-          <div style={paneBody}><ExpandableText text={getDisplayValue(i, field, item)} /></div>
-        )}
+        </div>
       </div>
     );
   };
@@ -409,6 +508,8 @@ export function RCAResultsPage({ results, dataset }) {
           </button>
         </div>
       </div>
+
+      {editModal()}
     </div>
   );
 }
