@@ -314,6 +314,11 @@ button:hover .cta-fill { clip-path: inset(0 0 0 0); }
 .enter-up { animation: fadeInUp 380ms var(--ease-out-expo) both; }
 
 /* ── Hero (homepage) decoration ── */
+/* The decorative backdrop eases in on its own opacity track so it settles just
+   as the foreground `.enter-up` cluster begins to rise — the world fades in,
+   then the content lifts into it. Opacity-only, so it never fights the petals'
+   and sparkles' infinite transform loops. */
+.hero-bg-enter { animation: fadeIn 620ms var(--ease-out-quart) both; }
 .hero-playground {
   color: var(--hero-play-to);
   background: linear-gradient(96deg, var(--hero-play-from), var(--hero-play-to));

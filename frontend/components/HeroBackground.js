@@ -38,6 +38,7 @@ function HeroBackground() {
   return (
     <div
       aria-hidden="true"
+      className="hero-bg-enter"
       style={{
         position: "absolute",
         inset: 0,
